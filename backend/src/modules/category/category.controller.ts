@@ -3,6 +3,7 @@ import {
   CreateExerciseCategoryType,
   DeleteExerciseCategoryType,
   EditExerciseCategoryType,
+  GetExerciseCategoryByIdType,
   GetExerciseCategoryType,
 } from "./category.dto";
 import {
@@ -30,13 +31,6 @@ export async function getExerciseCategoryHandler(
   res: Response
 ) {
   try {
-    if (req.query.id) {
-      const category = await findExerciseCategoryById(req.query);
-      if (category) {
-        return res.send(category);
-      }
-      return res.status(404).send({ message: "Category not found" });
-    }
     const categories = await findExerciseCategories();
     return res.send(categories);
   } catch (error: any) {
@@ -44,17 +38,32 @@ export async function getExerciseCategoryHandler(
   }
 }
 
+export async function getExerciseCategoryByIdHandler(
+  req: Request<GetExerciseCategoryByIdType["params"]>,
+  res: Response
+) {
+  try {
+    const category = await findExerciseCategoryById(req.params);
+    console.log(category);
+    if (category) {
+      return res.send(category);
+    }
+    return res.status(404).send({ message: "Category not found" });
+  } catch (error: any) {
+    res.status(409).send(error.message);
+  }
+}
+
 export async function editExerciseCategoryHandler(
   req: Request<
+    EditExerciseCategoryType["params"],
     {},
-    {},
-    EditExerciseCategoryType["body"],
-    EditExerciseCategoryType["query"]
+    EditExerciseCategoryType["body"]
   >,
   res: Response
 ) {
   try {
-    const category = await findExerciseCategoryById(req.query);
+    const category = await findExerciseCategoryById(req.params);
     if (category) {
       const response = await editExerciseCategory(req);
       return res.send(response);
@@ -66,13 +75,13 @@ export async function editExerciseCategoryHandler(
 }
 
 export async function deleteExerciseCategoryHandler(
-  req: Request<{}, {}, {}, DeleteExerciseCategoryType["query"]>,
+  req: Request<DeleteExerciseCategoryType["params"], {}, {}>,
   res: Response
 ) {
   try {
-    const category = await findExerciseCategoryById(req.query);
+    const category = await findExerciseCategoryById(req.params);
     if (category) {
-      const response = await deleteExerciseCategory(req.query);
+      const response = await deleteExerciseCategory(req.params);
       return res.send(response);
     }
     return res.status(404).send({ message: "Category not found" });

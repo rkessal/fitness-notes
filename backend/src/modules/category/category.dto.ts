@@ -26,8 +26,14 @@ export const GetCategorySchema = z.object({
   }),
 });
 
+export const GetCategoryByIdSchema = z.object({
+  params: z.object({
+    id: z.string({ required_error: "Category id is required" }),
+  }),
+});
+
 export const EditCategorySchema = z.object({
-  query: z.object({
+  params: z.object({
     id: z.string(),
   }),
   body: z.object({
@@ -37,12 +43,13 @@ export const EditCategorySchema = z.object({
 });
 
 export const DeleteCategorySchema = z.object({
-  query: z.object({
+  params: z.object({
     id: z.string(),
   }),
 });
 
 export type CreateExerciseCategoryType = z.infer<typeof CreateCategorySchema>;
 export type GetExerciseCategoryType = z.infer<typeof GetCategorySchema>;
+export type GetExerciseCategoryByIdType = z.infer<typeof GetCategoryByIdSchema>;
 export type EditExerciseCategoryType = z.infer<typeof EditCategorySchema>;
 export type DeleteExerciseCategoryType = z.infer<typeof DeleteCategorySchema>;

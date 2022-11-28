@@ -5,13 +5,14 @@ import {
   createExerciseHandler,
   deleteExerciseHandler,
   editExerciseHandler,
+  getExerciseByIdHandler,
   getExerciseHandler,
 } from "./exercise.controller";
 import {
   CreateExerciseSchema,
   DeleteExerciseSchema,
   EditExerciseSchema,
-  GetExerciseSchema,
+  GetExerciseByIdSchema,
 } from "./exercise.dto";
 
 export function exerciseRoutes(app: Express) {
@@ -20,14 +21,19 @@ export function exerciseRoutes(app: Express) {
     [validate(CreateExerciseSchema), requireAuth],
     createExerciseHandler
   );
-  app.get("/api/exercise", validate(GetExerciseSchema), getExerciseHandler);
+  app.get("/api/exercise", getExerciseHandler);
+  app.get(
+    "/api/exercise/:id",
+    validate(GetExerciseByIdSchema),
+    getExerciseByIdHandler
+  );
   app.put(
-    "/api/exercise",
+    "/api/exercise/:id",
     [validate(EditExerciseSchema), requireAuth],
     editExerciseHandler
   );
   app.delete(
-    "/api/exercise",
+    "/api/exercise/:id",
     [validate(DeleteExerciseSchema), requireAuth],
     deleteExerciseHandler
   );

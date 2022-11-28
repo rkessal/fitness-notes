@@ -38,30 +38,37 @@ export const ExerciseSchema = z.object({
 });
 
 export const CreateExerciseSchema = z.object({
-  body: ExerciseSchema,
-});
-
-export const GetExerciseSchema = z.object({
-  query: z.object({
-    id: Id.optional(),
-    userId: userId.optional(),
+  body: z.object({
+    name: Name,
+    description: Description,
+    image: z.string().optional(),
+    userId: userId,
+    categoryId: z.string(),
   }),
 });
 
 export const GetExerciseByIdSchema = z.object({
-  query: z.object({
-    id: Id,
+  params: z.object({
+    id: z.string(),
   }),
 });
 
+export const GetExerciseSchema = z.object({
+  query: z
+    .object({
+      userId: Id,
+    })
+    .optional(),
+});
+
 export const DeleteExerciseSchema = z.object({
-  query: z.object({
+  params: z.object({
     id: z.string(),
   }),
 });
 
 export const EditExerciseSchema = z.object({
-  query: z.object({
+  params: z.object({
     id: z.string(),
   }),
   body: z

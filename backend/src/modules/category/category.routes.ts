@@ -5,12 +5,14 @@ import {
   createExerciseCategoryHandler,
   deleteExerciseCategoryHandler,
   editExerciseCategoryHandler,
+  getExerciseCategoryByIdHandler,
   getExerciseCategoryHandler,
 } from "./category.controller";
 import {
   CreateCategorySchema,
   DeleteCategorySchema,
   EditCategorySchema,
+  GetCategoryByIdSchema,
   GetCategorySchema,
 } from "./category.dto";
 
@@ -20,18 +22,19 @@ export function categoryRoutes(app: Express) {
     [validate(CreateCategorySchema), requireAuth],
     createExerciseCategoryHandler
   );
+  app.get("/api/category", getExerciseCategoryHandler);
   app.get(
-    "/api/category",
-    validate(GetCategorySchema),
-    getExerciseCategoryHandler
+    "/api/category/:id",
+    validate(GetCategoryByIdSchema),
+    getExerciseCategoryByIdHandler
   );
   app.put(
-    "/api/category",
+    "/api/category/:id",
     [requireAuth, validate(EditCategorySchema)],
     editExerciseCategoryHandler
   );
   app.delete(
-    "/api/category",
+    "/api/category/:id",
     [requireAuth, validate(DeleteCategorySchema)],
     deleteExerciseCategoryHandler
   );

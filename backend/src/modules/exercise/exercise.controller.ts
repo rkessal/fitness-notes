@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
 import logger from "../../utils/logger";
-import { findUser } from "../user/user.service";
+import { findExerciseCategoryById } from "../category/category.service";
+import { findUser, findUserById } from "../user/user.service";
 import {
   CreateExerciseInput,
   DeleteExerciseInput,
   EditExerciseInput,
+  GetExerciseByIdInput,
   GetExerciseInput,
 } from "./exercise.dto";
 import {
@@ -21,11 +23,17 @@ export async function createExerciseHandler(
   res: Response
 ) {
   try {
-    const exercise = await createExercise({
-      ...req.body,
-      userId: req.session.userId,
+    const category = await findExerciseCategoryById({
+      id: req.body.categoryId,
     });
-    return res.send(exercise);
+    if (category) {
+      const exercise = await createExercise({
+        ...req.body,
+        userId: req.session.userId,
+      });
+      return res.send(exercise);
+    }
+    return res.status(404).send({ message: "Category not found" });
   } catch (error: any) {
     logger.error(error);
     return res.status(409).send(error);
@@ -37,17 +45,13 @@ export async function getExerciseHandler(
   res: Response
 ) {
   try {
-    if (req.query.id) {
-      const exercise = await findExerciseById(req.query);
-      if (exercise) {
-        return res.send(exercise);
-      }
-      return res.status(404).send({ message: "Exercise not found" });
-    }
-    if (req.query.userId) {
-      const exercise = await findCreatedExercisesByUserId(req.query);
-      if (exercise) {
-        return res.send(exercise);
+    if (req.query?.userId) {
+      const user = await findUserById({ userId: req.query.userId });
+      if (user) {
+        const exercise = await findCreatedExercisesByUserId(req.query);
+        if (exercise) {
+          return res.send(exercise);
+        }
       }
       return res.status(404).send({ message: "User not found" });
     }
@@ -59,12 +63,25 @@ export async function getExerciseHandler(
   }
 }
 
-export async function editExerciseHandler(
-  req: Request<{}, {}, EditExerciseInput["body"], EditExerciseInput["query"]>,
+export async function getExerciseByIdHandler(
+  req: Request<GetExerciseByIdInput["params"]>,
   res: Response
 ) {
   try {
-    const exercise = await findExerciseById(req.query);
+    const exercise = await findExerciseById(req.params);
+    if (exercise) {
+      return res.send(exercise);
+    }
+    return res.status(404).send({ message: "Exercise not found" });
+  } catch (error) {}
+}
+
+export async function editExerciseHandler(
+  req: Request<EditExerciseInput["params"], {}, EditExerciseInput["body"]>,
+  res: Response
+) {
+  try {
+    const exercise = await findExerciseById(req.params);
     if (exercise) {
       if (exercise.userId === req.session.userId) {
         const response = await editExercise(req);
@@ -80,14 +97,14 @@ export async function editExerciseHandler(
 }
 
 export async function deleteExerciseHandler(
-  req: Request<{}, {}, {}, DeleteExerciseInput["query"]>,
+  req: Request<DeleteExerciseInput["params"]>,
   res: Response
 ) {
   try {
-    const exercise = await findExerciseById(req.query);
+    const exercise = await findExerciseById(req.params);
     if (exercise) {
       if (exercise.userId === req.session.userId) {
-        const response = await deleteExercise(req.query);
+        const response = await deleteExercise(req.params);
         return res.send(response);
       }
       return res.status(403).send({ message: "Invalid credentials" });

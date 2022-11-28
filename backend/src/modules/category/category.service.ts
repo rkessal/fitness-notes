@@ -3,6 +3,7 @@ import {
   CreateExerciseCategoryType,
   DeleteExerciseCategoryType,
   EditExerciseCategoryType,
+  GetExerciseCategoryByIdType,
   GetExerciseCategoryType,
 } from "./category.dto";
 
@@ -18,8 +19,9 @@ export async function createExerciseCategory(
 }
 
 export async function findExerciseCategoryById(
-  input: GetExerciseCategoryType["query"]
+  input: GetExerciseCategoryByIdType["params"]
 ) {
+  console.log(input.id);
   return prisma.exerciseCategory.findUnique({
     where: {
       id: input.id,
@@ -41,7 +43,7 @@ export async function findExerciseCategories() {
 export async function editExerciseCategory(input: EditExerciseCategoryType) {
   return prisma.exerciseCategory.update({
     where: {
-      id: input.query.id,
+      id: input.params.id,
     },
     data: {
       name: input.body.name,
@@ -51,7 +53,7 @@ export async function editExerciseCategory(input: EditExerciseCategoryType) {
 }
 
 export async function deleteExerciseCategory(
-  input: DeleteExerciseCategoryType["query"]
+  input: DeleteExerciseCategoryType["params"]
 ) {
   return prisma.exerciseCategory.delete({
     where: {
