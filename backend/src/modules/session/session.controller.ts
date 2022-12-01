@@ -13,9 +13,16 @@ export async function createSessionHandler(
     if (session) {
       req.session.userId = session;
       console.log(req.session.userId);
-      return res.send(session);
+      return res.send({
+        success: true,
+        session: req.sessionID,
+        userId: req.session.userId,
+      });
     }
-    return res.status(401).send("Invalid credentials");
+    return res.status(401).send({
+      success: false,
+      message: "Invalid credentials",
+    });
   } catch (error: any) {
     return res.status(409).send(error.message);
   }

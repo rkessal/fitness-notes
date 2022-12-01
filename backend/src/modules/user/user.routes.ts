@@ -5,25 +5,26 @@ import {
   createUserHandler,
   editUserHandler,
   editUserPasswordHandler,
-  getUserHandler,
+  getUserByIdHandler,
 } from "./user.controller";
 import {
   CreateUserSchema,
   EditPasswordSchema,
   EditUserSchema,
+  GetUserByIdSchema,
   GetUserSchema,
 } from "./user.dto";
 
 export function userRoutes(app: Express) {
   app.post("/api/user", validate(CreateUserSchema), createUserHandler);
-  app.get("/api/user", validate(GetUserSchema), getUserHandler);
+  app.get("/api/user/:userId", validate(GetUserByIdSchema), getUserByIdHandler);
   app.put(
-    "/api/user",
+    "/api/user/:userId",
     [requireAuth, validate(EditUserSchema)],
     editUserHandler
   );
   app.put(
-    "/api/userPassword",
+    "/api/userPassword/:userId",
     [requireAuth, validate(EditPasswordSchema)],
     editUserPasswordHandler
   );

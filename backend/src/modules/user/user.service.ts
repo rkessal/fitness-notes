@@ -22,7 +22,7 @@ export async function findUser(input: CreateUserInput["body"]["email"]) {
   // console.log(input);
   const user = await prisma.user.findUnique({
     where: {
-      email: input,
+      email: input.toLocaleLowerCase(),
     },
     include: {
       exercises: true,
@@ -31,7 +31,7 @@ export async function findUser(input: CreateUserInput["body"]["email"]) {
   return user;
 }
 
-export async function findUserById(input: GetUserByIdInput["query"]) {
+export async function findUserById(input: GetUserByIdInput["params"]) {
   return await prisma.user.findUnique({
     where: {
       id: input.userId,
@@ -45,7 +45,7 @@ export async function findUserById(input: GetUserByIdInput["query"]) {
 export async function editUser(input: EditUserInput) {
   return await prisma.user.update({
     where: {
-      id: input.query.userId,
+      id: input.params.userId,
     },
     data: {
       lastname: input.body.lastname,
@@ -55,13 +55,31 @@ export async function editUser(input: EditUserInput) {
 }
 
 export async function editUserPassword(input: EditUserPasswordInput) {
-  const password = await argon2.hash(input.body.password);
+  const password = await argon2.hash(input.body.candidatePassword);
   return await prisma.user.update({
     where: {
-      id: input.query.userId,
+      id: input.params.userId,
     },
     data: {
       password: password,
+    },
+  });
+}
+
+export async function checkPassword(
+  password: string,
+  candidatePassword: string
+) {
+  return await argon2.verify(password, candidatePassword);
+}
+
+export async function getUserPassword(input: GetUserByIdInput) {
+  return await prisma.user.findUnique({
+    where: {
+      id: input.params.userId,
+    },
+    select: {
+      password: true,
     },
   });
 }

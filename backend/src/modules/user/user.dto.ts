@@ -41,13 +41,13 @@ export const GetUserSchema = z.object({
 });
 
 export const GetUserByIdSchema = z.object({
-  query: z.object({
+  params: z.object({
     userId: z.string(),
   }),
 });
 
 export const EditUserSchema = z.object({
-  query: z.object({
+  params: z.object({
     userId: z.string(),
   }),
   body: z.object({
@@ -57,11 +57,12 @@ export const EditUserSchema = z.object({
 });
 
 export const EditPasswordSchema = z.object({
-  query: z.object({
+  params: z.object({
     userId: z.string(),
   }),
   body: z.object({
     password: Password,
+    candidatePassword: Password,
   }),
 });
 

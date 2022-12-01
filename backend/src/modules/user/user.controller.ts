@@ -3,14 +3,17 @@ import {
   CreateUserInput,
   EditUserInput,
   EditUserPasswordInput,
+  GetUserByIdInput,
   GetUserInput,
 } from "./user.dto";
 import {
+  checkPassword,
   createUser,
   editUser,
   editUserPassword,
   findUser,
   findUserById,
+  getUserPassword,
 } from "./user.service";
 import { omit } from "lodash";
 import logger from "../../utils/logger";
@@ -32,13 +35,13 @@ export async function createUserHandler(
   }
 }
 
-export async function getUserHandler(
-  req: Request<{}, {}, {}, GetUserInput["query"]>,
+export async function getUserByIdHandler(
+  req: Request<GetUserByIdInput["params"]>,
   res: Response
 ) {
   console.log("User: ", req);
   try {
-    const user = await findUser(req.query.email);
+    const user = await findUserById(req.params);
     if (user) {
       return res.send(omit(user, "password"));
     }
@@ -49,17 +52,17 @@ export async function getUserHandler(
 }
 
 export async function editUserHandler(
-  req: Request<{}, {}, EditUserInput["body"], EditUserInput["query"]>,
+  req: Request<EditUserInput["params"], {}, EditUserInput["body"]>,
   res: Response
 ) {
   try {
-    const user = await findUserById(req.query);
+    const user = await findUserById(req.params);
     if (user) {
       if (user.id === req.session.userId) {
         const response = await editUser(req);
         return res.send(omit(response, "password"));
       }
-      return res.status(403).send();
+      return res.status(401).send({ message: "Forbidden" });
     }
     return res.status(404).send({ message: "User not found" });
   } catch (error: any) {
@@ -69,21 +72,31 @@ export async function editUserHandler(
 
 export async function editUserPasswordHandler(
   req: Request<
+    EditUserPasswordInput["params"],
     {},
-    {},
-    EditUserPasswordInput["body"],
-    EditUserPasswordInput["query"]
+    EditUserPasswordInput["body"]
   >,
   res: Response
 ) {
   try {
-    const user = await findUserById(req.query);
+    const user = await findUserById(req.params);
     if (user) {
       if (user.id === req.session.userId) {
-        const response = await editUserPassword(req);
-        return res.send(omit(response, "password"));
+        const userPassword = await getUserPassword(req);
+        console.log("UserPassword", userPassword);
+        if (userPassword) {
+          const check = await checkPassword(
+            userPassword.password,
+            req.body.password
+          );
+          if (check) {
+            const response = await editUserPassword(req);
+            return res.send(omit(response, "password"));
+          }
+          return res.status(400).send({ message: "Invalid current password" });
+        }
       }
-      return res.status(403).send();
+      return res.status(401).send({ message: "Forbidden" });
     }
     return res.status(404).send({ message: "User not found" });
   } catch (error: any) {
