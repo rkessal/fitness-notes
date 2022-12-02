@@ -1,4 +1,4 @@
-import axiosClient from "../client";
+import axiosClient, { throwErrorMessage } from "../client";
 import axios from "axios";
 
 export interface LoginData {
@@ -14,9 +14,7 @@ export const login = async ({ email, password }: LoginData) => {
     });
     return data;
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      return error.response?.data;
-    }
+    throwErrorMessage(error);
   }
 };
 
@@ -28,9 +26,7 @@ export const register = async ({ email, password }: LoginData) => {
     });
     return data;
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      return error.response?.data;
-    }
+    throwErrorMessage(error);
   }
 };
 
@@ -39,8 +35,8 @@ export const logout = async () => {
     const { data } = await axiosClient.delete("/session");
     return data;
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      return error.response?.data;
+    if (error) {
+      throwErrorMessage(error);
     }
   }
 };

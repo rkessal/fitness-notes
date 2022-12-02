@@ -7,11 +7,14 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectAuth, signout } from "../redux/slices/authSlice";
+import { selectAuth, setSignOut, signout } from "../redux/slices/authSlice";
 import { logout } from "../api/auth/auth.service";
 import User from "../api/user/user.hooks";
+import Auth from "../api/auth/auth.hooks";
+import { showToast } from "../utils/index.utils";
+import { useToast } from "react-native-toast-notifications";
 
 const ProfileScreen = () => {
   const [name, setName] = useState("");
@@ -24,8 +27,10 @@ const ProfileScreen = () => {
   const getUserData = User.useGetUserData(userId);
   const editUserData = User.useEditUserData(userId);
   const editUserPassword = User.useEditUserPassword(userId);
+  const logout = Auth.useLogout();
+  const toast = useToast();
 
-  useEffect(() => {
+  const handleGetUserData = () => {
     const { isSuccess, isLoading, data, isError, error } = getUserData;
     if (!isLoading) {
       if (isSuccess) {
@@ -35,14 +40,26 @@ const ProfileScreen = () => {
       }
     }
     if (isError) {
-      console.log(error);
+      showToast(toast, "danger", error as string);
     }
-  }, []);
+  };
+
+  useMemo(() => {
+    handleGetUserData();
+  }, [getUserData.isLoading, getUserData.error, getUserData.data]);
 
   const handleEditUserInfo = () => {
-    const { mutate, isError, error } = editUserData;
-    mutate({ lastname, name });
-    if (isError) console.log(error);
+    editUserData.mutate(
+      { lastname, name },
+      {
+        onSuccess: () => {
+          showToast(toast, "success", "User info updated");
+        },
+        onError: (error) => {
+          showToast(toast, "danger", error as string);
+        },
+      }
+    );
   };
 
   const handleEditUserPassword = () => {
@@ -50,19 +67,25 @@ const ProfileScreen = () => {
     mutate(
       { password, candidatePassword },
       {
-        onSuccess: (data) => console.log(data),
-        onError: (error) => console.log(error),
+        onSuccess: (data) => {
+          showToast(toast, "success", "Password updated");
+        },
+        onError: (error) => {
+          showToast(toast, "danger", error as string);
+        },
       }
     );
-    console.log(editUserPassword);
-    if (isError) console.log(error);
   };
 
   function handleSignout() {
-    dispatch(signout());
-    logout()
-      .then((response) => console.log(response))
-      .catch((err) => console.log(err));
+    logout.mutate(undefined, {
+      onSuccess: () => {
+        dispatch(setSignOut());
+      },
+      onError: (error) => {
+        showToast(toast, "danger", error as string);
+      },
+    });
   }
 
   return (

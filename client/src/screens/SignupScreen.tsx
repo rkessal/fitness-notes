@@ -9,8 +9,14 @@ import {
   View,
 } from "react-native";
 import { useDispatch } from "react-redux";
-import { register } from "../api/auth/auth.service";
-import { signin } from "../redux/slices/authSlice";
+import {
+  AuthState,
+  setAuthFail,
+  setAuthSuccess,
+} from "../redux/slices/authSlice";
+import Auth from "../api/auth/auth.hooks";
+import { showToast } from "../utils/index.utils";
+import { useToast } from "react-native-toast-notifications";
 
 type Props = {
   navigation: NavigationProp<any, any>;
@@ -20,13 +26,37 @@ const SignupScreen = ({ navigation }: Props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
+  const register = Auth.useRegister();
+  const login = Auth.useLogin();
+  const toast = useToast();
 
-  const handleRegister = async (email: string, password: string) => {
-    const user = await register({ email, password });
-    console.log(user);
-    if (user.id) {
-      dispatch(signin(email, password));
-    }
+  const handleRegister = () => {
+    register.mutate(
+      { email, password },
+      {
+        onSuccess: () => {
+          handleLogin();
+        },
+        onError: (error) => {
+          console.log(error);
+        },
+      }
+    );
+  };
+
+  const handleLogin = () => {
+    login.mutate(
+      { email, password },
+      {
+        onSuccess: (data) => {
+          dispatch(setAuthSuccess(data));
+        },
+        onError: (error) => {
+          dispatch(setAuthFail(error as string));
+          showToast(toast, "danger", error as string);
+        },
+      }
+    );
   };
 
   return (
@@ -47,7 +77,7 @@ const SignupScreen = ({ navigation }: Props) => {
           />
           <TouchableOpacity
             className="p-5 bg-brand rounded-2xl w-full items-center"
-            onPress={() => handleRegister(email, password)}
+            onPress={() => handleRegister()}
           >
             <Text className="text-white font-semibold">Sign up</Text>
           </TouchableOpacity>

@@ -21,11 +21,8 @@ const HomeScreen = ({ navigation }: Props) => {
   return (
     <SafeAreaView>
       <View>
-        <TouchableOpacity onPress={() => dispatch(signout())}>
-          <Text>LOGOUT</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
-          <Text>PROFILE</Text>
+        <TouchableOpacity onPress={() => navigation.navigate("AddExercise")}>
+          <Text>AddExercise</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

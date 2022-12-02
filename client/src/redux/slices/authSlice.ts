@@ -3,7 +3,7 @@ import { login } from "../../api/auth/auth.service";
 import { RootState } from "../rootReducer";
 import { AppThunk } from "../store";
 
-interface AuthState {
+export interface AuthState {
   isLoggedIn: boolean;
   isLoading: boolean;
   userId?: string;
@@ -60,7 +60,6 @@ export const signin =
   };
 
 export const signout = (): AppThunk => (dispatch) => {
-  console.log("hey");
   try {
     dispatch(setLoading(true));
     dispatch(setSignOut());

@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import axiosClient from "../client";
+import axiosClient, { throwErrorMessage } from "../client";
 
 export type UserData = {
   userId: string;
@@ -15,9 +15,7 @@ export async function getUserData(userId: string) {
     const { data } = await axiosClient.get(`/user/${userId}`);
     return data;
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      return error.response?.data;
-    }
+    throwErrorMessage(error);
   }
 }
 
@@ -32,9 +30,7 @@ export async function editUserData(
     });
     return data;
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      return error.response;
-    }
+    throwErrorMessage(error);
   }
 }
 
@@ -56,8 +52,6 @@ export async function editUserPassword(
     if (status === 200) return data;
     throw new Error(data.message);
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      return error.response?.data;
-    }
+    throwErrorMessage(error);
   }
 }

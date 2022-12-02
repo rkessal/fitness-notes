@@ -8,8 +8,15 @@ import {
 } from "react-native";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectAuth, signin } from "../redux/slices/authSlice";
+import {
+  selectAuth,
+  setAuthFail,
+  setAuthSuccess,
+} from "../redux/slices/authSlice";
 import { NavigationProp } from "@react-navigation/native";
+import Auth from "../api/auth/auth.hooks";
+import { useToast } from "react-native-toast-notifications";
+import { showToast } from "../utils/index.utils";
 
 type Props = {
   navigation: NavigationProp<any, any>;
@@ -20,7 +27,24 @@ const SigninScreen = ({ navigation }: Props) => {
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const user = useSelector(selectAuth);
-  // console.log(user);
+  const login = Auth.useLogin();
+  const toast = useToast();
+
+  const handleLogin = () => {
+    login.mutate(
+      { email, password },
+      {
+        onSuccess: (data) => {
+          dispatch(setAuthSuccess(data));
+          console.log(user);
+        },
+        onError: (error) => {
+          dispatch(setAuthFail(error as string));
+          showToast(toast, "danger", error as string);
+        },
+      }
+    );
+  };
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="flex-1 items-center justify-center px-6 bg-white space-y-12">
@@ -39,7 +63,7 @@ const SigninScreen = ({ navigation }: Props) => {
           />
           <TouchableOpacity
             className="p-5 bg-brand rounded-2xl w-full items-center"
-            onPress={() => dispatch(signin(email, password))}
+            onPress={handleLogin}
           >
             <Text className="text-white font-semibold">Sign in</Text>
           </TouchableOpacity>

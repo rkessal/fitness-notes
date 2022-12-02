@@ -1,20 +1,55 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import CalendarScreen from "../screens/CalendarScreen";
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import AddExerciseScreen from "../screens/AddExerciseScreen";
+import Icon from "react-native-vector-icons/AntDesign";
+import { Text, View } from "react-native";
 
 type Props = {};
 
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+
+const HomeStack = () => {
+  return (
+    <Tab.Navigator
+      initialRouteName="Home"
+      screenOptions={({ route }) => ({
+        tabBarActiveTintColor: "#2274A5",
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName = "hearto";
+          switch (route.name) {
+            case "Home":
+              iconName = "hearto";
+              break;
+            case "Calendar":
+              iconName = "calendar";
+              break;
+            case "Profile":
+              iconName = "user";
+              break;
+          }
+          return <Icon name={iconName} color={color} size={size} />;
+        },
+      })}
+    >
+      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Calendar" component={CalendarScreen} />
+    </Tab.Navigator>
+  );
+};
 
 const AppNavigator = (props: Props) => {
   return (
     <Stack.Navigator
-      initialRouteName="Home"
+      initialRouteName="HomeStack"
       screenOptions={{ headerShown: false }}
     >
-      <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="HomeStack" component={HomeStack} />
+      <Stack.Screen name="AddExercise" component={AddExerciseScreen} />
     </Stack.Navigator>
   );
 };

@@ -9,7 +9,6 @@ type Props = {};
 
 const AppRoute = (props: Props) => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
-  console.log(isLoggedIn);
   return (
     <NavigationContainer>
       {isLoggedIn ? <AppNavigator /> : <AuthNavigator />}
