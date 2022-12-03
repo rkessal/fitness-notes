@@ -1,12 +1,11 @@
 import axiosClient, { throwErrorMessage } from "../client";
-import axios from "axios";
 
 export interface LoginData {
   email: string;
   password: string;
 }
 
-export const login = async ({ email, password }: LoginData) => {
+export async function login({ email, password }: LoginData) {
   try {
     const { data } = await axiosClient.post("/session", {
       email: email,
@@ -16,9 +15,9 @@ export const login = async ({ email, password }: LoginData) => {
   } catch (error) {
     throwErrorMessage(error);
   }
-};
+}
 
-export const register = async ({ email, password }: LoginData) => {
+export async function register({ email, password }: LoginData) {
   try {
     const { data } = await axiosClient.post("/user", {
       email: email,
@@ -28,9 +27,9 @@ export const register = async ({ email, password }: LoginData) => {
   } catch (error) {
     throwErrorMessage(error);
   }
-};
+}
 
-export const logout = async () => {
+export async function logout() {
   try {
     const { data } = await axiosClient.delete("/session");
     return data;
@@ -39,4 +38,4 @@ export const logout = async () => {
       throwErrorMessage(error);
     }
   }
-};
+}

@@ -6,10 +6,12 @@ import ProfileScreen from "../screens/ProfileScreen";
 import AddExerciseScreen from "../screens/AddExerciseScreen";
 import Icon from "react-native-vector-icons/AntDesign";
 import { Text, View } from "react-native";
+import ExerciseDetailsScreen from "../screens/ExerciseDetailsScreen";
+import { RootStackParamList } from "../screens/types/types";
 
 type Props = {};
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
 
 const HomeStack = () => {
@@ -50,6 +52,13 @@ const AppNavigator = (props: Props) => {
     >
       <Stack.Screen name="HomeStack" component={HomeStack} />
       <Stack.Screen name="AddExercise" component={AddExerciseScreen} />
+      <Stack.Screen
+        name="ExerciseDetails"
+        component={ExerciseDetailsScreen}
+        options={{
+          presentation: "modal",
+        }}
+      />
     </Stack.Navigator>
   );
 };
