@@ -17,17 +17,23 @@ export async function createSet(input: CreateSetInput["body"]) {
           id: input.exerciseId,
         },
       },
+      User: {
+        connect: {
+          id: input.userId,
+        },
+      },
     },
     include: {
       Exercise: true,
+      User: true,
     },
   });
 }
 
-export async function findSets(input: GetSetsInput["query"]) {
+export async function findSets(input: GetSetsInput) {
   return prisma.set.findMany({
     where: {
-      exerciseId: input.exerciseId,
+      userId: input.query.userId,
     },
     include: {
       Exercise: true,
@@ -35,7 +41,19 @@ export async function findSets(input: GetSetsInput["query"]) {
   });
 }
 
-export async function findSetById(input: GetSetByIdInput["query"]) {
+export async function findSetsByExerciseId(input: GetSetsInput) {
+  return prisma.set.findMany({
+    where: {
+      userId: input.query.userId,
+      exerciseId: input.query.exerciseId,
+    },
+    include: {
+      Exercise: true,
+    },
+  });
+}
+
+export async function findSetById(input: GetSetByIdInput["params"]) {
   return prisma.set.findUnique({
     where: {
       id: input.setId,
@@ -49,7 +67,7 @@ export async function findSetById(input: GetSetByIdInput["query"]) {
 export async function editSet(input: EditSetInput) {
   return prisma.set.update({
     where: {
-      id: input.query.setId,
+      id: input.params.setId,
     },
     data: {
       weight: input.body.weight,
@@ -58,7 +76,7 @@ export async function editSet(input: EditSetInput) {
   });
 }
 
-export async function deleteSet(input: DeleteSetInput["query"]) {
+export async function deleteSet(input: DeleteSetInput["params"]) {
   return prisma.set.delete({
     where: {
       id: input.setId,

@@ -22,15 +22,19 @@ export function setRoutes(app: Express) {
     [requireAuth, validate(CreateSetSchema)],
     createSetHandler
   );
-  app.get("/api/sets", [requireAuth, validate(GetSetsSchema)], getSetsHandler);
+  app.get("/api/set", [requireAuth, validate(GetSetsSchema)], getSetsHandler);
   app.get(
-    "/api/set",
+    "/api/set/:setId",
     [requireAuth, validate(GetSetByIdSchema)],
     getSetByIdHandler
   );
-  app.put("/api/set", [requireAuth, validate(EditSetSchema)], editSetHandler);
+  app.put(
+    "/api/set:setId",
+    [requireAuth, validate(EditSetSchema)],
+    editSetHandler
+  );
   app.delete(
-    "/api/set",
+    "/api/set:setId",
     [requireAuth, validate(DeleteSetSchema)],
     deleteSetHandler
   );

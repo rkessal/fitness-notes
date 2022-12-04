@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { string, z } from "zod";
 
 const setId = z.string().optional();
 
@@ -20,6 +20,7 @@ const SetSchema = z.object({
   weight: Weight,
   reps: Reps,
   exerciseId: z.string(),
+  userId: z.string(),
 });
 
 export const CreateSetSchema = z.object({
@@ -28,18 +29,19 @@ export const CreateSetSchema = z.object({
 
 export const GetSetsSchema = z.object({
   query: z.object({
-    exerciseId: z.string(),
+    exerciseId: z.string().optional(),
+    userId: z.string(),
   }),
 });
 
 export const GetSetByIdSchema = z.object({
-  query: z.object({
+  params: z.object({
     setId: z.string(),
   }),
 });
 
 export const EditSetSchema = z.object({
-  query: z.object({
+  params: z.object({
     setId: z.string(),
   }),
   body: SetSchema.omit({
@@ -49,7 +51,7 @@ export const EditSetSchema = z.object({
 });
 
 export const DeleteSetSchema = z.object({
-  query: z.object({
+  params: z.object({
     setId: z.string(),
   }),
 });

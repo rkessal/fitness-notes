@@ -14,6 +14,7 @@ import {
   editSet,
   findSetById,
   findSets,
+  findSetsByExerciseId,
 } from "./set.service";
 
 export async function createSetHandler(
@@ -47,23 +48,30 @@ export async function getSetsHandler(
   res: Response
 ) {
   try {
-    const exercise = await findExerciseById({ id: req.query.exerciseId });
-    if (exercise) {
-      const sets = await findSets(req.query);
+    if (req.query.userId === req.session.userId) {
+      if (req.query.exerciseId) {
+        const exercise = await findExerciseById({ id: req.query.exerciseId });
+        if (exercise) {
+          const sets = await findSetsByExerciseId(req);
+          return res.send(sets);
+        }
+        return res.status(404).send({ message: "Exercise not found" });
+      }
+      const sets = await findSets(req);
       return res.send(sets);
     }
-    res.status(404).send({ message: "Exercise not found" });
+    res.status(401).send({ message: "Invalid credentials" });
   } catch (error: any) {
     return res.status(409).send({ message: error.message });
   }
 }
 
 export async function getSetByIdHandler(
-  req: Request<{}, {}, {}, GetSetByIdInput["query"]>,
+  req: Request<GetSetByIdInput["params"]>,
   res: Response
 ) {
   try {
-    const set = await findSetById(req.query);
+    const set = await findSetById(req.params);
     if (set) {
       res.send(set);
     }
@@ -74,11 +82,11 @@ export async function getSetByIdHandler(
 }
 
 export async function editSetHandler(
-  req: Request<{}, {}, EditSetInput["body"], EditSetInput["query"]>,
+  req: Request<EditSetInput["params"], {}, EditSetInput["body"]>,
   res: Response
 ) {
   try {
-    const set = await findSetById(req.query);
+    const set = await findSetById(req.params);
     if (set?.exerciseId) {
       const exercise = await findExerciseById({ id: set.exerciseId });
       if (exercise?.userId === req.session.userId) {
@@ -94,15 +102,15 @@ export async function editSetHandler(
 }
 
 export async function deleteSetHandler(
-  req: Request<{}, {}, {}, DeleteSetInput["query"]>,
+  req: Request<DeleteSetInput["params"], {}, {}>,
   res: Response
 ) {
   try {
-    const set = await findSetById(req.query);
+    const set = await findSetById(req.params);
     if (set?.exerciseId) {
       const exercise = await findExerciseById({ id: set.exerciseId });
       if (exercise?.userId === req.session.userId) {
-        const response = await deleteSet(req.query);
+        const response = await deleteSet(req.params);
         return res.send(response);
       }
       return res.status(403).send({ message: "Invalid credentials" });
