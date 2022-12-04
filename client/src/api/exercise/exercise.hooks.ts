@@ -1,7 +1,8 @@
 import { useMutation, useQuery, UseQueryResult } from "react-query";
-import { Exercise } from "../../types/types";
+import { CustomExercisePayload, Exercise } from "../../types/types";
 import {
   addExerciseToWorkout,
+  createCustomExercise,
   getExerciseById,
   getExercises,
 } from "./exercise.service";
@@ -20,5 +21,10 @@ export default {
   useAddExerciseToWorkout: (exerciseId: string) =>
     useMutation(async (userId: string) => {
       return await addExerciseToWorkout(exerciseId, userId);
+    }),
+
+  useCreateCustomExercise: () =>
+    useMutation(async (payload: CustomExercisePayload) => {
+      return await createCustomExercise(payload);
     }),
 };
