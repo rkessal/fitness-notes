@@ -1,6 +1,10 @@
 import { useMutation, useQuery, UseQueryResult } from "react-query";
-import { Exercise } from "../../screens/types/types";
-import { getExerciseById, getExercises } from "./exercise.service";
+import { Exercise } from "../../types/types";
+import {
+  addExerciseToWorkout,
+  getExerciseById,
+  getExercises,
+} from "./exercise.service";
 
 export default {
   useGetExercises: () =>
@@ -11,5 +15,10 @@ export default {
   useGetExerciseById: (exerciseId: string): UseQueryResult<Exercise> =>
     useQuery("getExerciseById", () => {
       return getExerciseById(exerciseId);
+    }),
+
+  useAddExerciseToWorkout: (exerciseId: string) =>
+    useMutation(async (userId: string) => {
+      return await addExerciseToWorkout(exerciseId, userId);
     }),
 };

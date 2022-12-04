@@ -7,7 +7,8 @@ import AddExerciseScreen from "../screens/AddExerciseScreen";
 import Icon from "react-native-vector-icons/AntDesign";
 import { Text, View } from "react-native";
 import ExerciseDetailsScreen from "../screens/ExerciseDetailsScreen";
-import { RootStackParamList } from "../screens/types/types";
+import { RootStackParamList } from "../types/types";
+import AddCustomExerciseScreen from "../screens/AddCustomExerciseScreen";
 
 type Props = {};
 
@@ -55,6 +56,13 @@ const AppNavigator = (props: Props) => {
       <Stack.Screen
         name="ExerciseDetails"
         component={ExerciseDetailsScreen}
+        options={{
+          presentation: "modal",
+        }}
+      />
+      <Stack.Screen
+        name="AddCustomExercise"
+        component={AddCustomExerciseScreen}
         options={{
           presentation: "modal",
         }}

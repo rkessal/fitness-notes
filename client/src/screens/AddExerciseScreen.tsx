@@ -11,7 +11,8 @@ import ExerciseCard from "../components/ExerciseCard";
 import Title from "../components/ui/Title";
 import Exercise from "../api/exercise/exercise.hooks";
 import { useMemo } from "react";
-import { Exercise as TExercise } from "./types/types";
+import { Exercise as TExercise } from "../types/types";
+import RoundedButton from "../components/ui/RoundedButton";
 
 type Props = {
   navigation: NavigationProp<any, any>;
@@ -19,10 +20,14 @@ type Props = {
 
 const AddExerciseScreen = ({ navigation }: Props) => {
   const { data, error, isLoading } = Exercise.useGetExercises();
-  console.log(isLoading);
-  console.log(data);
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-white relative">
+      <View className="absolute right-5 bottom-10 z-30">
+        <RoundedButton
+          onPress={() => navigation.navigate("AddCustomExercise")}
+          name="plus"
+        />
+      </View>
       {isLoading ? (
         <Text>Loading</Text>
       ) : (

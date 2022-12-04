@@ -1,8 +1,10 @@
 import { useMutation, useQuery, UseQueryResult } from "react-query";
+import { Exercise, User } from "../../types/types";
 import {
   editUserData,
   editUserPassword,
   getUserData,
+  getUserExercises,
   UserData,
 } from "./user.service";
 
@@ -37,4 +39,13 @@ export default {
         }
       }
     ),
+
+  useGetUserExercises: (
+    userId: string | undefined
+  ): UseQueryResult<Exercise[]> =>
+    useQuery("getUserExercises", () => {
+      if (userId) {
+        return getUserExercises(userId);
+      }
+    }),
 };

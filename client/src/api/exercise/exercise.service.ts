@@ -17,3 +17,14 @@ export async function getExerciseById(exerciseId: string) {
     throwErrorMessage(error);
   }
 }
+
+export async function addExerciseToWorkout(exerciseId: string, userId: string) {
+  try {
+    const { data } = await axiosClient.post(`/exercise/${exerciseId}/add`, {
+      userId,
+    });
+    return data;
+  } catch (error) {
+    throwErrorMessage(error);
+  }
+}

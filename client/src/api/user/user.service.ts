@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from "axios";
+import { User } from "../../types/types";
 import axiosClient, { throwErrorMessage } from "../client";
 
 export type UserData = {
@@ -51,6 +52,19 @@ export async function editUserPassword(
     );
     if (status === 200) return data;
     throw new Error(data.message);
+  } catch (error) {
+    throwErrorMessage(error);
+  }
+}
+
+export async function getUserExercises(userId: string) {
+  try {
+    const { data }: AxiosResponse<User> = await axiosClient.get("/exercise", {
+      params: {
+        userId,
+      },
+    });
+    return data.exercises;
   } catch (error) {
     throwErrorMessage(error);
   }
