@@ -20,13 +20,15 @@ export const Name = z
   .string({
     required_error: "Name is required",
   })
-  .max(30, "Name can be 30 chars long");
+  .max(30, "Name can be 30 chars long")
+  .min(1);
 
 export const Description = z
   .string({
     required_error: "Description is required",
   })
-  .max(350, { message: "Description length is too long (350)" });
+  .max(350, { message: "Description length is too long (350)" })
+  .min(10);
 
 export const ExerciseSchema = z.object({
   id: Id,
