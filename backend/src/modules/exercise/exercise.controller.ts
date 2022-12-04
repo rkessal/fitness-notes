@@ -1,8 +1,9 @@
-import { Request, Response } from "express";
+import { query, Request, Response } from "express";
 import logger from "../../utils/logger";
 import { findExerciseCategoryById } from "../category/category.service";
 import { findUser, findUserById } from "../user/user.service";
 import {
+  AddExerciseToWorkoutInput,
   CreateExerciseInput,
   DeleteExerciseInput,
   EditExerciseInput,
@@ -16,6 +17,8 @@ import {
   findCreatedExercisesByUserId,
   deleteExercise,
   editExercise,
+  addExerciseToWorkout,
+  findExercisesByUserId,
 } from "./exercise.service";
 
 export async function createExerciseHandler(
@@ -23,17 +26,20 @@ export async function createExerciseHandler(
   res: Response
 ) {
   try {
-    const category = await findExerciseCategoryById({
-      id: req.body.categoryId,
-    });
-    if (category) {
-      const exercise = await createExercise({
-        ...req.body,
-        userId: req.session.userId,
+    req.body.categories.forEach(async (c) => {
+      const category = await findExerciseCategoryById({
+        id: c.categoryId,
       });
-      return res.send(exercise);
-    }
-    return res.status(404).send({ message: "Category not found" });
+      if (!category) {
+        return res.status(404).send({ message: "Category not found" });
+      }
+    });
+    const exercise = await createExercise({
+      ...req.body,
+      categories: req.body.categories,
+      userId: req.session.userId,
+    });
+    return res.send(exercise);
   } catch (error: any) {
     logger.error(error);
     return res.status(409).send(error);
@@ -48,9 +54,9 @@ export async function getExerciseHandler(
     if (req.query?.userId) {
       const user = await findUserById({ userId: req.query.userId });
       if (user) {
-        const exercise = await findCreatedExercisesByUserId(req.query);
-        if (exercise) {
-          return res.send(exercise);
+        const exercises = await findExercisesByUserId(req);
+        if (exercises) {
+          return res.send(exercises[0]);
         }
       }
       return res.status(404).send({ message: "User not found" });
@@ -108,6 +114,26 @@ export async function deleteExerciseHandler(
         return res.send(response);
       }
       return res.status(403).send({ message: "Invalid credentials" });
+    }
+    return res.status(404).send({ message: "Exercise not found" });
+  } catch (error: any) {
+    res.status(409).send(error.message);
+  }
+}
+
+export async function addExerciseToWorkoutHandler(
+  req: Request<
+    AddExerciseToWorkoutInput["params"],
+    {},
+    AddExerciseToWorkoutInput["body"]
+  >,
+  res: Response
+) {
+  try {
+    const exercise = await findExerciseById(req.params);
+    if (exercise) {
+      const response = await addExerciseToWorkout(req);
+      return res.send(response);
     }
     return res.status(404).send({ message: "Exercise not found" });
   } catch (error: any) {

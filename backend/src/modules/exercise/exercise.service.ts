@@ -1,5 +1,6 @@
 import prisma from "../../utils/prisma";
 import {
+  AddExerciseToWorkoutInput,
   CreateExerciseInput,
   DeleteExerciseInput,
   EditExerciseInput,
@@ -24,9 +25,9 @@ export async function createExercise(input: CreateExerciseInput["body"]) {
         },
       },
       categories: {
-        connect: {
-          id: input.categoryId,
-        },
+        connect: input.categories.map((category) => ({
+          id: category.categoryId,
+        })),
       },
     },
   });
@@ -106,6 +107,32 @@ export async function deleteExercise(input: DeleteExerciseInput["params"]) {
   return prisma.exercise.delete({
     where: {
       id: input.id,
+    },
+  });
+}
+
+export async function addExerciseToWorkout(input: AddExerciseToWorkoutInput) {
+  return prisma.exercise.update({
+    where: {
+      id: input.params.id,
+    },
+    data: {
+      users: {
+        connect: {
+          id: input.body.userId,
+        },
+      },
+    },
+  });
+}
+
+export async function findExercisesByUserId(input: GetExerciseInput) {
+  return prisma.user.findMany({
+    where: {
+      id: input.query?.userId,
+    },
+    select: {
+      exercises: true,
     },
   });
 }

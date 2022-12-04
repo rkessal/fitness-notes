@@ -43,7 +43,13 @@ export const CreateExerciseSchema = z.object({
     description: Description,
     image: z.string().optional(),
     userId: userId,
-    categoryId: z.string(),
+    categories: z
+      .array(
+        z.object({
+          categoryId: z.string(),
+        })
+      )
+      .nonempty(),
   }),
 });
 
@@ -81,8 +87,26 @@ export const EditExerciseSchema = z.object({
     .partial(),
 });
 
+export const AddExerciseToWorkoutSchema = z.object({
+  params: z.object({
+    id: z.string(),
+  }),
+  body: z.object({
+    userId: z.string(),
+  }),
+});
+
+export const GetExercisesByUserIdSchema = z.object({
+  query: z.object({
+    userId: z.string(),
+  }),
+});
+
 export type CreateExerciseInput = z.infer<typeof CreateExerciseSchema>;
 export type GetExerciseInput = z.infer<typeof GetExerciseSchema>;
 export type GetExerciseByIdInput = z.infer<typeof GetExerciseByIdSchema>;
 export type DeleteExerciseInput = z.infer<typeof DeleteExerciseSchema>;
 export type EditExerciseInput = z.infer<typeof EditExerciseSchema>;
+export type AddExerciseToWorkoutInput = z.infer<
+  typeof AddExerciseToWorkoutSchema
+>;

@@ -2,6 +2,7 @@ import { Express } from "express";
 import requireAuth from "../../middleware/requireAuth";
 import validate from "../../middleware/validateResource";
 import {
+  addExerciseToWorkoutHandler,
   createExerciseHandler,
   deleteExerciseHandler,
   editExerciseHandler,
@@ -9,6 +10,7 @@ import {
   getExerciseHandler,
 } from "./exercise.controller";
 import {
+  AddExerciseToWorkoutSchema,
   CreateExerciseSchema,
   DeleteExerciseSchema,
   EditExerciseSchema,
@@ -31,6 +33,11 @@ export function exerciseRoutes(app: Express) {
     "/api/exercise/:id",
     [validate(EditExerciseSchema), requireAuth],
     editExerciseHandler
+  );
+  app.post(
+    "/api/exercise/:id/add",
+    [validate(AddExerciseToWorkoutSchema), requireAuth],
+    addExerciseToWorkoutHandler
   );
   app.delete(
     "/api/exercise/:id",
