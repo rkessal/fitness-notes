@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   ScrollView,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { useSelector } from "react-redux";
@@ -36,9 +37,16 @@ const HomeScreen = ({ navigation }: Props) => {
       )}
       <View className="flex-1 bg-red-50">
         {data?.map((exercise: Exercise) => (
-          <View key={exercise.id}>
+          <TouchableOpacity
+            key={exercise.id}
+            onPress={() =>
+              navigation.navigate("Exercise", {
+                id: exercise.id,
+              })
+            }
+          >
             <Text>{exercise.name}</Text>
-          </View>
+          </TouchableOpacity>
         ))}
       </View>
     </SafeAreaView>

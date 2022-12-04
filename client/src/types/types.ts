@@ -1,6 +1,7 @@
 export type RootStackParamList = {
   ExerciseDetails: { id: string };
   HomeStack: undefined;
+  Exercise: { id: string };
   AddExercise: undefined;
   AddCustomExercise: undefined;
 };
@@ -31,4 +32,15 @@ export type Exercise = {
   userId: string;
   users: Omit<User[], "createdAt" | "exercises">;
   categories: Omit<Category[], "exercises">;
+};
+
+export type CategoryToExercise = {
+  categoryId: Category["id"];
+};
+
+export type CustomExercisePayload = {
+  name: string;
+  description: string;
+  image?: string;
+  categories: CategoryToExercise[];
 };

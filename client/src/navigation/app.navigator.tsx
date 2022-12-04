@@ -9,6 +9,8 @@ import { Text, View } from "react-native";
 import ExerciseDetailsScreen from "../screens/ExerciseDetailsScreen";
 import { RootStackParamList } from "../types/types";
 import AddCustomExerciseScreen from "../screens/AddCustomExerciseScreen";
+import Exercise from "../screens/ExerciseScreen";
+import ExerciseScreen from "../screens/ExerciseScreen";
 
 type Props = {};
 
@@ -53,6 +55,7 @@ const AppNavigator = (props: Props) => {
     >
       <Stack.Screen name="HomeStack" component={HomeStack} />
       <Stack.Screen name="AddExercise" component={AddExerciseScreen} />
+      <Stack.Screen name="Exercise" component={ExerciseScreen} />
       <Stack.Screen
         name="ExerciseDetails"
         component={ExerciseDetailsScreen}
