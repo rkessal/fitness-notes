@@ -6,14 +6,16 @@ const Weight = z
   .number({
     required_error: "Weight is required",
   })
-  .nonnegative("Rep number can't be negative");
+  .nonnegative("Rep number can't be negative")
+  .min(0.5, "Minimum weight is 0.5");
 
 const Reps = z
   .number({
     required_error: "Rep number is required",
   })
   .nonnegative("Rep number can't be negative")
-  .int("Rep number must be an integer");
+  .int("Rep number must be an integer")
+  .min(1, "Minimum rep is 1");
 
 const SetSchema = z.object({
   setId: setId,
@@ -44,9 +46,9 @@ export const EditSetSchema = z.object({
   params: z.object({
     setId: z.string(),
   }),
-  body: SetSchema.omit({
-    setId: true,
-    exerciseId: true,
+  body: SetSchema.pick({
+    weight: true,
+    reps: true,
   }),
 });
 

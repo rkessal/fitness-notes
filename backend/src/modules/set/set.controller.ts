@@ -27,11 +27,8 @@ export async function createSetHandler(
       const exercise = await findExerciseById({ id: req.body.exerciseId });
       if (user) {
         if (exercise) {
-          if (user.id === exercise.userId) {
-            const set = await createSet(req.body);
-            return res.send(set);
-          }
-          return res.status(403).send({ message: "Invalid credentials" });
+          const set = await createSet(req.body);
+          return res.send(set);
         }
         return res.status(404).send({ message: "Exercise not found" });
       }
@@ -88,8 +85,7 @@ export async function editSetHandler(
   try {
     const set = await findSetById(req.params);
     if (set?.exerciseId) {
-      const exercise = await findExerciseById({ id: set.exerciseId });
-      if (exercise?.userId === req.session.userId) {
+      if (set?.userId === req.session.userId) {
         const response = await editSet(req);
         return res.send(response);
       }

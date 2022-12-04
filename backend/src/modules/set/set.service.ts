@@ -47,6 +47,9 @@ export async function findSetsByExerciseId(input: GetSetsInput) {
       userId: input.query.userId,
       exerciseId: input.query.exerciseId,
     },
+    orderBy: {
+      createdAt: "desc",
+    },
     include: {
       Exercise: true,
     },

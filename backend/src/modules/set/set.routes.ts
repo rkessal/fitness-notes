@@ -29,7 +29,7 @@ export function setRoutes(app: Express) {
     getSetByIdHandler
   );
   app.put(
-    "/api/set:setId",
+    "/api/set/:setId",
     [requireAuth, validate(EditSetSchema)],
     editSetHandler
   );
