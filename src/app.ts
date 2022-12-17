@@ -2,7 +2,7 @@ import logger from "./utils/logger";
 import express, { Request, Response } from "express";
 import { userRoutes } from "./modules/user/user.routes";
 import { exerciseRoutes } from "./modules/exercise/exercise.routes";
-import expressSession from "./middleware/session";
+import expressSession, { RedisStore } from "./middleware/session";
 import { sessionRoutes } from "./modules/session/session.routes";
 import cors from "cors";
 import { categoryRoutes } from "./modules/category/category.routes";

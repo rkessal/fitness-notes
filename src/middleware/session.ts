@@ -11,14 +11,17 @@ declare module "express-session" {
 
 const cookieSecret =
   config.NODE_ENV === "production" ? config.COOKIE_SECRET : "randomsecret";
-const redisClient = new Redis({
-  connectionName: config.REDIS_URL,
-});
-const RedisStore = connectRedis(session);
+const redisClient = new Redis(
+  config.NODE_ENV === "production" ? config.REDIS_URL : ""
+);
+export const RedisStore = connectRedis(session);
 
 const expressSession = session({
   name: "sid",
-  store: new RedisStore({ client: redisClient, logErrors: true }),
+  store: new RedisStore({
+    client: redisClient,
+    logErrors: true,
+  }),
   resave: false,
   saveUninitialized: false,
   secret: cookieSecret,
