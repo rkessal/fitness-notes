@@ -4,6 +4,7 @@ declare global {
       NODE_ENV: "development" | "production";
       PORT?: string;
       COOKIE_SECRET: string;
+      COOKIE_NAME: string;
       REDIS_URL: string;
     }
   }

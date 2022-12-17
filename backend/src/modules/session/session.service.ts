@@ -1,7 +1,6 @@
 import argon2 from "argon2";
 import { findUser } from "../user/user.service";
 import { CreateSessionInput, GetSessionIdInput } from "./session.dto";
-import config from "config";
 
 export async function createSession(input: CreateSessionInput["body"]) {
   const user = await findUser(input.email);
@@ -25,5 +24,5 @@ export async function comparePassword(
 }
 
 export function getCookie() {
-  return config.get<string>("cookie_name");
+  return process.env.COOKIE_NAME;
 }
