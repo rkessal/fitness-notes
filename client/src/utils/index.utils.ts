@@ -10,5 +10,16 @@ export const showToast = (
 ) => {
   toast.show(message, {
     type: type,
+    style: {
+      width: "100%",
+      paddingVertical: 20,
+      borderRadius: 16,
+    },
+    textStyle: {
+      fontWeight: "700",
+      marginLeft: "auto",
+      marginRight: "auto",
+    },
+    duration: 1000,
   });
 };

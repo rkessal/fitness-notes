@@ -11,6 +11,7 @@ import { RootStackParamList } from "../types/types";
 import AddCustomExerciseScreen from "../screens/AddCustomExerciseScreen";
 import Exercise from "../screens/ExerciseScreen";
 import ExerciseScreen from "../screens/ExerciseScreen";
+import TimerScreen from "../screens/TimerScreen";
 
 type Props = {};
 
@@ -66,6 +67,13 @@ const AppNavigator = (props: Props) => {
       <Stack.Screen
         name="AddCustomExercise"
         component={AddCustomExerciseScreen}
+        options={{
+          presentation: "modal",
+        }}
+      />
+      <Stack.Screen
+        name="Timer"
+        component={TimerScreen}
         options={{
           presentation: "modal",
         }}

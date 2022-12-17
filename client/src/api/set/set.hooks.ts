@@ -2,6 +2,7 @@ import { useMutation, useQuery, UseQueryResult } from "react-query";
 import { Exercise, Set } from "../../types/types";
 import {
   addExerciseSet,
+  deleteExerciseSet,
   editExerciseSet,
   getExerciseSets,
 } from "./set.service";
@@ -20,7 +21,10 @@ export default {
     }),
   useEditExerciseSet: () =>
     useMutation(async (payload: Pick<Set, "id" | "weight" | "reps">) => {
-      console.log(payload);
       return await editExerciseSet(payload);
+    }),
+  useDeleteExerciseSet: () =>
+    useMutation(async (payload: Pick<Set, "id">) => {
+      return await deleteExerciseSet(payload);
     }),
 };

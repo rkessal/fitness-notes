@@ -4,6 +4,7 @@ export type RootStackParamList = {
   Exercise: { id: string };
   AddExercise: undefined;
   AddCustomExercise: undefined;
+  Timer: undefined;
 };
 
 export type User = {

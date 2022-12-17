@@ -42,3 +42,13 @@ export async function editExerciseSet(
     throwErrorMessage(error);
   }
 }
+
+export async function deleteExerciseSet(payload: Pick<Set, "id">) {
+  try {
+    const { data } = await axiosClient.delete(`/set/${payload.id}`);
+    return data;
+  } catch (error) {
+    console.log(error);
+    throwErrorMessage(error);
+  }
+}

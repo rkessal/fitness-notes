@@ -6,8 +6,9 @@ import {
   TouchableOpacity,
   TextInput,
   ActivityIndicator,
+  GestureResponderEvent,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { RootStackParamList, Set as TSet } from "../types/types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Title from "../components/ui/Title";
@@ -17,10 +18,11 @@ import { useSelector } from "react-redux";
 import { selectAuth } from "../redux/slices/authSlice";
 import { showToast } from "../utils/index.utils";
 import { useToast } from "react-native-toast-notifications";
+import RoundedButton from "../components/ui/RoundedButton";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Exercise">;
 
-const ExerciseScreen = ({ route }: Props) => {
+const ExerciseScreen = ({ route, navigation }: Props) => {
   const [weight, setWeight] = useState<string>("0");
   const [reps, setReps] = useState<string>("0");
   const [selectedSet, setSelectedSet] = useState<TSet | null | undefined>(null);
@@ -31,7 +33,9 @@ const ExerciseScreen = ({ route }: Props) => {
   });
   const addSet = Set.useAddExerciseSet();
   const editSet = Set.useEditExerciseSet();
+  const deleteSet = Set.useDeleteExerciseSet();
   const toast = useToast();
+
   const WEIGHT_MODIFIER = 2.5;
   const REP_MODIFIER = 1;
 
@@ -63,9 +67,28 @@ const ExerciseScreen = ({ route }: Props) => {
     });
   };
 
-  const handleSet = () => {
+  const handleSet = (isDelete?: boolean) => {
     if (selectedSet?.id) {
-      console.log("hey");
+      if (isDelete) {
+        deleteSet.mutate(
+          {
+            id: selectedSet.id,
+          },
+          {
+            onSuccess: (data) => {
+              showToast(toast, "success", "Set deleted");
+              setSelectedSet(null);
+              console.log(data);
+              refetch();
+            },
+            onError: (error) => {
+              showToast(toast, "danger", error as string);
+              console.log(error);
+            },
+          }
+        );
+        return;
+      }
       editSet.mutate(
         {
           id: selectedSet.id,
@@ -74,7 +97,7 @@ const ExerciseScreen = ({ route }: Props) => {
         },
         {
           onSuccess: (data) => {
-            showToast(toast, "success", "Set added");
+            showToast(toast, "success", "Set updated");
             console.log(data);
             refetch();
           },
@@ -114,11 +137,16 @@ const ExerciseScreen = ({ route }: Props) => {
     setWeight(() => set.weight.toString());
     setReps(() => set.reps.toString());
   };
-
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-white relative">
+      <View className="absolute right-5 bottom-12 z-30">
+        <RoundedButton
+          onPress={() => navigation.navigate("Timer")}
+          name="clockcircleo"
+        />
+      </View>
       <ScrollView className="flex-1 pt-5 ">
-        <View className="items-center justify-center px-6 bg-white space-y-12">
+        <View className="items-center justify-center px-6 pb-32 space-y-12">
           <View className="w-full space-y-6">
             <View>
               <Title intent="title">Weight</Title>
@@ -175,14 +203,25 @@ const ExerciseScreen = ({ route }: Props) => {
               </TouchableOpacity>
             </View>
           </View>
-          <TouchableOpacity
-            className="p-5 bg-brand rounded-2xl w-full items-center"
-            onPress={() => handleSet()}
-          >
-            <Text className="text-white font-bold">
-              {selectedSet ? "Update set" : "Add set"}
-            </Text>
-          </TouchableOpacity>
+          <View className="flex-row space-x-3">
+            <TouchableOpacity
+              className="p-5 bg-brand rounded-2xl flex-1 items-center"
+              onPress={() => handleSet()}
+            >
+              <Text className="text-white font-bold">
+                {selectedSet ? "Update" : "Add set"}
+              </Text>
+            </TouchableOpacity>
+
+            {selectedSet && (
+              <TouchableOpacity
+                className="p-5 bg-red-600 rounded-2xl flex-1 items-center"
+                onPress={() => handleSet(true)}
+              >
+                <Text className="text-white font-bold">Delete</Text>
+              </TouchableOpacity>
+            )}
+          </View>
           <View className="w-full space-y-6">
             <View>
               <Title intent="title">Progress</Title>
@@ -193,11 +232,11 @@ const ExerciseScreen = ({ route }: Props) => {
               ) : (
                 data?.map((set) => (
                   <TouchableOpacity
-                    onPress={() => handleSelectedSet(set)}
                     key={set.id}
-                    className={`flex flex-row p-5 justify-between bg-gray-100 rounded-lg mb-4 ${
+                    onPress={() => handleSelectedSet(set)}
+                    className={`z-10 flex flex-row p-5 justify-between bg-gray-100 rounded-lg mb-4 ${
                       selectedSet?.id === set.id
-                        ? "border-l-4 border-l-brand -ml-[4px]"
+                        ? "border-l-4 border-l-brand"
                         : ""
                     }`}
                   >
