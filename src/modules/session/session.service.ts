@@ -1,4 +1,5 @@
 import argon2 from "argon2";
+import config from "../../../config/config";
 import { findUser } from "../user/user.service";
 import { CreateSessionInput, GetSessionIdInput } from "./session.dto";
 
@@ -24,5 +25,5 @@ export async function comparePassword(
 }
 
 export function getCookie() {
-  return process.env.COOKIE_NAME;
+  return config.COOKIE_NAME;
 }
