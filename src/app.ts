@@ -25,12 +25,11 @@ app.get("/api/healthcheck", (req: Request, res: Response) => {
   res.send(JSON.stringify("Hello"));
 });
 
-userRoutes(app);
-exerciseRoutes(app);
-sessionRoutes(app);
-categoryRoutes(app);
-setRoutes(app);
-
 app.listen(port, async () => {
   logger.info(`App is running at ${host}:${port}`);
+  userRoutes(app);
+  exerciseRoutes(app);
+  sessionRoutes(app);
+  categoryRoutes(app);
+  setRoutes(app);
 });
