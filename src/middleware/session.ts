@@ -1,5 +1,5 @@
 import session from "express-session";
-import config from "config";
+import config from "../../config/config";
 import Redis from "ioredis";
 import connectRedis from "connect-redis";
 
@@ -10,12 +10,9 @@ declare module "express-session" {
 }
 
 const cookieSecret =
-  process.env.NODE_ENV === "production"
-    ? process.env.COOKIE_SECRET
-    : "randomsecret";
+  config.NODE_ENV === "production" ? config.COOKIE_SECRET : "randomsecret";
 const redisClient = new Redis({
-  connectionName:
-    process.env.NODE_ENV === "production" ? process.env.REDIS_URL : "",
+  connectionName: config.NODE_ENV === "production" ? config.REDIS_URL : "",
 });
 const RedisStore = connectRedis(session);
 
