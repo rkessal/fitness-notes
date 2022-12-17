@@ -10,6 +10,7 @@ dotenv.config({ path: path.resolve(__dirname, "../config/config.env") });
 
 interface ENV {
   NODE_ENV: string | undefined;
+  HOST: string | undefined;
   PORT: number | undefined;
   DATABASE_URL: string | undefined;
   REDIS_URL: string | undefined;
@@ -19,6 +20,7 @@ interface ENV {
 
 interface Config {
   NODE_ENV: string;
+  HOST: string;
   PORT: number;
   DATABASE_URL: string;
   REDIS_URL: string;
@@ -36,6 +38,7 @@ const getConfig = (): ENV => {
     COOKIE_SECRET: process.env.COOKIE_SECRET,
     DATABASE_URL: process.env.DATABASE_URL,
     REDIS_URL: process.env.REDIS_URL,
+    HOST: process.env.HOST,
   };
 };
 

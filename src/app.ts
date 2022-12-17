@@ -7,8 +7,10 @@ import { sessionRoutes } from "./modules/session/session.routes";
 import cors from "cors";
 import { categoryRoutes } from "./modules/category/category.routes";
 import { setRoutes } from "./modules/set/set.routes";
+import config from "../config/config";
 
-const port = process.env.PORT;
+const port = config.PORT;
+const host = config.HOST;
 const app = express();
 app.use(express.json());
 app.use(expressSession);
@@ -23,11 +25,12 @@ app.get("/api/healthcheck", (req: Request, res: Response) => {
   res.send(JSON.stringify("Hello"));
 });
 
-app.listen(port, async () => {
-  logger.info(`App is running at http://localhost:${port}`);
-  userRoutes(app);
-  exerciseRoutes(app);
-  sessionRoutes(app);
-  categoryRoutes(app);
-  setRoutes(app);
+userRoutes(app);
+exerciseRoutes(app);
+sessionRoutes(app);
+categoryRoutes(app);
+setRoutes(app);
+
+app.listen(port, host, async () => {
+  logger.info(`App is running at ${host}:${port}`);
 });
