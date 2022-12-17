@@ -31,6 +31,6 @@ sessionRoutes(app);
 categoryRoutes(app);
 setRoutes(app);
 
-app.listen(port, host, async () => {
+app.listen(port, async () => {
   logger.info(`App is running at ${host}:${port}`);
 });
