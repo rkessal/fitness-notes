@@ -1,4 +1,4 @@
-import session, { Session } from "express-session";
+import session from "express-session";
 import config from "config";
 import Redis from "ioredis";
 import connectRedis from "connect-redis";
@@ -9,9 +9,14 @@ declare module "express-session" {
   }
 }
 
-const sessionLifeTime = config.get<number>("session_lifetime");
-const cookieSecret = config.get<string>("cookie_secret");
-const redisClient = new Redis();
+const cookieSecret =
+  process.env.NODE_ENV === "production"
+    ? process.env.COOKIE_SECRET
+    : "randomsecret";
+const redisClient = new Redis({
+  connectionName:
+    process.env.NODE_ENV === "production" ? process.env.REDIS_URL : "",
+});
 const RedisStore = connectRedis(session);
 
 const expressSession = session({
@@ -21,7 +26,7 @@ const expressSession = session({
   saveUninitialized: false,
   secret: cookieSecret,
   cookie: {
-    maxAge: sessionLifeTime,
+    maxAge: 1000 * 60 * 60 * 10,
     sameSite: true,
     secure: "auto",
   },

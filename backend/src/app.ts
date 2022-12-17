@@ -1,5 +1,4 @@
 import logger from "./utils/logger";
-import config from "config";
 import express, { Request, Response } from "express";
 import { userRoutes } from "./modules/user/user.routes";
 import { exerciseRoutes } from "./modules/exercise/exercise.routes";
@@ -9,8 +8,7 @@ import cors from "cors";
 import { categoryRoutes } from "./modules/category/category.routes";
 import { setRoutes } from "./modules/set/set.routes";
 
-const port = config.get<number>("port");
-
+const port = process.env.PORT;
 const app = express();
 app.use(express.json());
 app.use(expressSession);
