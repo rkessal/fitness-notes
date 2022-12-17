@@ -5,18 +5,33 @@ import {
   SafeAreaView,
   TouchableOpacity,
   TextInput,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
-import { RootStackParamList } from "../types/types";
+import { RootStackParamList, Set as TSet } from "../types/types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Title from "../components/ui/Title";
 import Icon from "react-native-vector-icons/FontAwesome";
+import Set from "../api/set/set.hooks";
+import { useSelector } from "react-redux";
+import { selectAuth } from "../redux/slices/authSlice";
+import { showToast } from "../utils/index.utils";
+import { useToast } from "react-native-toast-notifications";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Exercise">;
 
 const ExerciseScreen = ({ route }: Props) => {
   const [weight, setWeight] = useState<string>("0");
   const [reps, setReps] = useState<string>("0");
+  const [selectedSet, setSelectedSet] = useState<TSet | null | undefined>(null);
+  const { userId } = useSelector(selectAuth);
+  const { data, isLoading, refetch } = Set.useGetExerciseSet({
+    userId: userId,
+    exerciseId: route.params.id,
+  });
+  const addSet = Set.useAddExerciseSet();
+  const editSet = Set.useEditExerciseSet();
+  const toast = useToast();
   const WEIGHT_MODIFIER = 2.5;
   const REP_MODIFIER = 1;
 
@@ -32,7 +47,6 @@ const ExerciseScreen = ({ route }: Props) => {
       }
       return tempWeight.toString();
     });
-    console.log(weight);
   };
 
   const handleReps = (action: "add" | "remove") => {
@@ -49,7 +63,58 @@ const ExerciseScreen = ({ route }: Props) => {
     });
   };
 
-  console.log(route.params.id);
+  const handleSet = () => {
+    if (selectedSet?.id) {
+      console.log("hey");
+      editSet.mutate(
+        {
+          id: selectedSet.id,
+          reps: parseInt(reps),
+          weight: parseFloat(weight),
+        },
+        {
+          onSuccess: (data) => {
+            showToast(toast, "success", "Set added");
+            console.log(data);
+            refetch();
+          },
+          onError: (error) => {
+            showToast(toast, "danger", error as string);
+            console.log(error);
+          },
+        }
+      );
+    } else {
+      addSet.mutate(
+        {
+          exerciseId: route.params.id,
+          userId: userId,
+          reps: parseInt(reps),
+          weight: parseFloat(weight),
+        },
+        {
+          onSuccess: (data) => {
+            showToast(toast, "success", "Set added");
+            refetch();
+          },
+          onError: (error) => {
+            showToast(toast, "danger", error as string);
+          },
+        }
+      );
+    }
+  };
+
+  const handleSelectedSet = (set: TSet) => {
+    if (selectedSet?.id === set.id) {
+      setSelectedSet(() => null);
+      return;
+    }
+    setSelectedSet(() => set);
+    setWeight(() => set.weight.toString());
+    setReps(() => set.reps.toString());
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView className="flex-1 pt-5 ">
@@ -67,7 +132,7 @@ const ExerciseScreen = ({ route }: Props) => {
               </TouchableOpacity>
               <View className="rounded-lg w-16 items-center justify-center">
                 <TextInput
-                  className="text-2xl w-28 flex-1 bg-red-50 text-center"
+                  className="text-4xl w-28 flex-1  text-center font-bold"
                   placeholder="weight"
                   keyboardType="numeric"
                   value={weight}
@@ -94,9 +159,9 @@ const ExerciseScreen = ({ route }: Props) => {
               </TouchableOpacity>
               <View className="rounded-lg w-16 items-center justify-center">
                 <TextInput
-                  className="text-2xl w-28 flex-1 bg-red-50 text-center"
+                  className="text-4xl w-28 flex-1  text-center font-bold"
                   placeholder="reps"
-                  keyboardType="numeric"
+                  keyboardType="number-pad"
                   maxLength={3}
                   value={reps}
                   onChangeText={setReps}
@@ -110,12 +175,37 @@ const ExerciseScreen = ({ route }: Props) => {
               </TouchableOpacity>
             </View>
           </View>
-          <TouchableOpacity className="p-5 bg-brand rounded-2xl w-full items-center">
-            <Text className="text-white font-bold">Add set</Text>
+          <TouchableOpacity
+            className="p-5 bg-brand rounded-2xl w-full items-center"
+            onPress={() => handleSet()}
+          >
+            <Text className="text-white font-bold">
+              {selectedSet ? "Update set" : "Add set"}
+            </Text>
           </TouchableOpacity>
           <View className="w-full space-y-6">
             <View>
               <Title intent="title">Progress</Title>
+            </View>
+            <View>
+              {isLoading ? (
+                <ActivityIndicator />
+              ) : (
+                data?.map((set) => (
+                  <TouchableOpacity
+                    onPress={() => handleSelectedSet(set)}
+                    key={set.id}
+                    className={`flex flex-row p-5 justify-between bg-gray-100 rounded-lg mb-4 ${
+                      selectedSet?.id === set.id
+                        ? "border-l-4 border-l-brand -ml-[4px]"
+                        : ""
+                    }`}
+                  >
+                    <Text className="font-semibold">{set.weight} kgs</Text>
+                    <Text className="font-semibold">{set.reps} reps</Text>
+                  </TouchableOpacity>
+                ))
+              )}
             </View>
           </View>
         </View>

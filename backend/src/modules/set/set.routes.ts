@@ -34,7 +34,7 @@ export function setRoutes(app: Express) {
     editSetHandler
   );
   app.delete(
-    "/api/set:setId",
+    "/api/set/:setId",
     [requireAuth, validate(DeleteSetSchema)],
     deleteSetHandler
   );

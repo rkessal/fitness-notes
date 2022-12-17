@@ -34,6 +34,16 @@ export type Exercise = {
   categories: Omit<Category[], "exercises">;
 };
 
+export type Set = {
+  id: string;
+  weight: number;
+  reps: number;
+  createdAt: string;
+  exerciseId: Exercise["id"];
+  userId: User["id"] | undefined;
+  Exercise: Exercise;
+};
+
 export type CategoryToExercise = {
   categoryId: Category["id"];
 };
