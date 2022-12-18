@@ -14,19 +14,15 @@ const host = config.HOST;
 const app = express();
 app.use(express.json());
 app.use(expressSession);
-app.use(
-  cors({
-    credentials: true,
-  })
-);
 
 app.get("/api/healthcheck", (req: Request, res: Response) => {
   console.log("SESSION: " + req.session.userId);
   res.send(JSON.stringify("Hello"));
 });
 
-app.listen(port, async () => {
+app.listen(port, host, async () => {
   logger.info(`App is running at ${host}:${port}`);
+  console.log(express);
   userRoutes(app);
   exerciseRoutes(app);
   sessionRoutes(app);
