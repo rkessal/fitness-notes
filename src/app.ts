@@ -14,6 +14,7 @@ const host = config.HOST;
 const app = express();
 app.use(express.json());
 app.use(expressSession);
+app.set("host", "0.0.0.0");
 
 app.get("/api/healthcheck", (req: Request, res: Response) => {
   console.log("SESSION: " + req.session.userId);
