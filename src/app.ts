@@ -20,8 +20,8 @@ app.get("/api/healthcheck", (req: Request, res: Response) => {
   res.send(JSON.stringify("Hello"));
 });
 
-app.listen(port, host, async () => {
-  logger.info(`App is running at ${host}:${port}`);
+app.listen(port, async () => {
+  logger.info(`App is running at port: ${port}`);
   console.log(express);
   userRoutes(app);
   exerciseRoutes(app);
