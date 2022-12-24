@@ -2,6 +2,7 @@ import { NavigationProp } from "@react-navigation/native";
 import React from "react";
 import {
   ActivityIndicator,
+  Image,
   SafeAreaView,
   ScrollView,
   Text,
@@ -13,6 +14,8 @@ import RoundedButton from "../components/ui/RoundedButton";
 import { selectAuth } from "../redux/slices/authSlice";
 import User from "../api/user/user.hooks";
 import { Category, Exercise } from "../types/types";
+import ExerciseCard from "../components/ExerciseCard";
+import Title from "../components/ui/Title";
 
 type Props = {
   navigation: NavigationProp<any, any>;
@@ -35,7 +38,7 @@ const HomeScreen = ({ navigation }: Props) => {
           />
         </View>
       )}
-      <View className="flex-1 bg-red-50">
+      <View className="flex-1 bg-white p-6">
         {data?.map((exercise: Exercise) => (
           <TouchableOpacity
             key={exercise.id}
@@ -45,7 +48,20 @@ const HomeScreen = ({ navigation }: Props) => {
               })
             }
           >
-            <Text>{exercise.name}</Text>
+            <View className="flex-row space-x-2 mb-3 justify-center items-center">
+              <Image
+                source={{
+                  uri: exercise.image,
+                }}
+                className="h-24 w-24"
+              />
+              <View className="flex-1">
+                <Title intent="subtitle">{exercise.name}</Title>
+                <Text numberOfLines={2} className="truncate">
+                  {exercise.description}
+                </Text>
+              </View>
+            </View>
           </TouchableOpacity>
         ))}
       </View>

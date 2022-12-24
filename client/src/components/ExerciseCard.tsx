@@ -9,7 +9,7 @@ import {
 import Title from "./ui/Title";
 
 type Props = {
-  navigation: NavigationProp<any, any>;
+  navigation?: NavigationProp<any, any>;
   id: string;
   title: string;
   image?: string;
@@ -20,7 +20,7 @@ const ExerciseCard = ({ image, title, navigation, id }: Props) => {
     <TouchableOpacity
       className="flex-row"
       onPress={() =>
-        navigation.navigate("ExerciseDetails", {
+        navigation?.navigate("ExerciseDetails", {
           id: id,
         })
       }
