@@ -78,7 +78,6 @@ const ExerciseScreen = ({ route, navigation }: Props) => {
             onSuccess: (data) => {
               showToast(toast, "success", "Set deleted");
               setSelectedSet(null);
-              console.log(data);
               refetch();
             },
             onError: (error) => {
@@ -98,7 +97,6 @@ const ExerciseScreen = ({ route, navigation }: Props) => {
         {
           onSuccess: (data) => {
             showToast(toast, "success", "Set updated");
-            console.log(data);
             refetch();
           },
           onError: (error) => {

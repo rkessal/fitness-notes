@@ -12,7 +12,6 @@ export async function createSessionHandler(
     const session = await createSession({ email, candidatePassword });
     if (session) {
       req.session.userId = session;
-      console.log(req.session.userId);
       return res.send({
         success: true,
         session: req.sessionID,

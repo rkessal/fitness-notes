@@ -83,7 +83,8 @@ const ProfileScreen = () => {
         dispatch(setSignOut());
       },
       onError: (error) => {
-        showToast(toast, "danger", error as string);
+        console.log(error);
+        // showToast(toast, "danger", error as string);
       },
     });
   }

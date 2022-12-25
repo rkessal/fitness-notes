@@ -25,7 +25,6 @@ const HomeScreen = ({ navigation }: Props) => {
   const { userId } = useSelector(selectAuth);
   const { data, isLoading, error } = User.useGetUserExercises(userId);
 
-  console.log(data);
   return (
     <SafeAreaView className="flex-1 relative">
       {isLoading ? (

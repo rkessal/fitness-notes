@@ -48,6 +48,19 @@ export async function deleteExerciseSet(payload: Pick<Set, "id">) {
     const { data } = await axiosClient.delete(`/set/${payload.id}`);
     return data;
   } catch (error) {
+    throwErrorMessage(error);
+  }
+}
+
+export async function getUserSets(payload: Pick<Set, "userId">) {
+  try {
+    const { data } = await axiosClient.get("/set", {
+      params: {
+        ...payload,
+      },
+    });
+    return data;
+  } catch (error) {
     console.log(error);
     throwErrorMessage(error);
   }

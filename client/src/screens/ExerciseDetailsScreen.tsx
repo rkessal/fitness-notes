@@ -31,10 +31,8 @@ const ExerciseDetailsScreen = ({ route }: Props) => {
       workout.mutate(userId, {
         onSuccess: () => {
           showToast(toast, "success", "Exercise added to workout");
-          console.log("SUCCESS");
         },
         onError: (error) => {
-          console.log(userId);
           showToast(toast, "danger", error as string);
         },
       });

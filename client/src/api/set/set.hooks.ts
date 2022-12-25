@@ -5,6 +5,7 @@ import {
   deleteExerciseSet,
   editExerciseSet,
   getExerciseSets,
+  getUserSets,
 } from "./set.service";
 export default {
   useGetExerciseSet: (
@@ -26,5 +27,11 @@ export default {
   useDeleteExerciseSet: () =>
     useMutation(async (payload: Pick<Set, "id">) => {
       return await deleteExerciseSet(payload);
+    }),
+  useGetUserSets: (payload: Pick<Set, "userId">): UseQueryResult<Set[]> =>
+    useQuery("getUserSet", async () => {
+      if (payload) {
+        return await getUserSets(payload);
+      }
     }),
 };

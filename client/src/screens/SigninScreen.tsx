@@ -36,7 +36,6 @@ const SigninScreen = ({ navigation }: Props) => {
       {
         onSuccess: (data) => {
           dispatch(setAuthSuccess(data));
-          console.log(user);
         },
         onError: (error) => {
           dispatch(setAuthFail(error as string));
