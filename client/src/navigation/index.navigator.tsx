@@ -1,9 +1,10 @@
 import { NavigationContainer } from "@react-navigation/native";
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import { selectIsLoggedIn } from "../redux/slices/authSlice";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { selectIsLoggedIn, signout } from "../redux/slices/authSlice";
 import AppNavigator from "./app.navigator";
 import AuthNavigator from "./auth.navigator";
+import Auth from "../api/auth/auth.hooks";
 
 type Props = {};
 

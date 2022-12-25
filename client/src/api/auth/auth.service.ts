@@ -39,3 +39,13 @@ export async function logout() {
     }
   }
 }
+
+export async function getUserSession() {
+  try {
+    const { data } = await axiosClient.get("/session");
+    return data;
+  } catch (error) {
+    console.log(error);
+    throwErrorMessage(error);
+  }
+}

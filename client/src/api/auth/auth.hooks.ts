@@ -1,6 +1,12 @@
-import { useMutation } from "react-query";
+import { useMutation, useQuery, UseQueryResult } from "react-query";
 import { AuthState } from "../../redux/slices/authSlice";
-import { login, LoginData, logout, register } from "./auth.service";
+import {
+  getUserSession,
+  login,
+  LoginData,
+  logout,
+  register,
+} from "./auth.service";
 
 export default {
   useLogin: () =>
@@ -16,5 +22,9 @@ export default {
   useLogout: () =>
     useMutation(() => {
       return logout();
+    }),
+  useCheckAuth: (): UseQueryResult<string> =>
+    useQuery("getUserSession", async () => {
+      return await getUserSession();
     }),
 };

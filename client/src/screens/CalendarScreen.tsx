@@ -6,6 +6,7 @@ import {
   ScrollView,
   SafeAreaView,
   TouchableOpacity,
+  RefreshControl,
 } from "react-native";
 import { Calendar, CalendarList, Agenda } from "react-native-calendars";
 import { useSelector } from "react-redux";
@@ -24,8 +25,10 @@ const CalendarScreen = ({ navigation }: Props) => {
   });
   const [sets, setSets] = useState({});
   const [setsOnSelectedDay, setSetsOnSelectedDay] = useState<any[] | []>([]);
+  const [day, setDay] = useState("");
 
   useEffect(() => {
+    setSets({});
     data?.forEach((set: TSet) => {
       let day = set.createdAt.split("T")[0];
       setSets((prev) => ({
@@ -33,7 +36,13 @@ const CalendarScreen = ({ navigation }: Props) => {
         [day]: { marked: true, dotColor: "red" },
       }));
     });
+    getSetsPerDay(day);
   }, [data]);
+
+  useEffect(() => {
+    const today = new Date().toISOString().split("T")[0];
+    setDay(today);
+  }, []);
 
   const getSetsPerDay = (day: string) => {
     let tempSets: TSet[] | [] = [];
@@ -47,7 +56,6 @@ const CalendarScreen = ({ navigation }: Props) => {
       tempSets = tempSets.sort((a: TSet, b: TSet) => {
         return a.exerciseId.localeCompare(b.exerciseId);
       });
-      console.log(tempSets);
     });
     tempSets.forEach((set) => {
       temp = set.exerciseId;
@@ -71,19 +79,29 @@ const CalendarScreen = ({ navigation }: Props) => {
     setSetsOnSelectedDay(temp2);
   };
 
-  console.log(setsOnSelectedDay);
+  const onRefresh = () => {
+    refetch();
+    getSetsPerDay(day);
+  };
 
   return (
     <SafeAreaView className="flex-1">
       <View className="bg-white flex-1 overflow-y-scroll">
         <Calendar
           className="px-3 pt-6"
+          initialDate={day}
           markedDates={sets}
           onDayPress={({ dateString }) => {
+            setDay(dateString);
             getSetsPerDay(dateString);
           }}
         />
-        <ScrollView className="rounded-t-xl space-y-3 px-6 pt-8 ">
+        <ScrollView
+          className="rounded-t-xl space-y-3 px-6 pt-8 "
+          refreshControl={
+            <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
+          }
+        >
           {setsOnSelectedDay.map((set) => (
             <TouchableOpacity
               key={set.exerciseId}

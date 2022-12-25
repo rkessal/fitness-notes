@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { login } from "../../api/auth/auth.service";
 import { RootState } from "../rootReducer";
-import { AppThunk } from "../store";
+import { AppThunk, store } from "../store";
 
 export interface AuthState {
   isLoggedIn: boolean;

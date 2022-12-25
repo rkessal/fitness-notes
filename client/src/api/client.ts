@@ -1,4 +1,6 @@
-import axios, { AxiosError } from "axios";
+import axios from "axios";
+import { signout } from "../redux/slices/authSlice";
+import { store } from "../redux/store";
 import { BASE_URL } from "../utils/index.utils";
 
 const axiosClient = axios.create({
@@ -7,8 +9,13 @@ const axiosClient = axios.create({
 
 export const throwErrorMessage = (error: any) => {
   if (axios.isAxiosError(error)) {
+    if (error.response?.status === 401) {
+      store.dispatch(signout());
+    }
     throw (
-      error.response?.data.message || error.response?.data.issues[0].message
+      error.response?.data ||
+      error.response?.data.message ||
+      error.response?.data.issues[0].message
     );
   }
 };

@@ -3,6 +3,7 @@ import React from "react";
 import {
   ActivityIndicator,
   Image,
+  RefreshControl,
   SafeAreaView,
   ScrollView,
   Text,
@@ -23,12 +24,12 @@ type Props = {
 
 const HomeScreen = ({ navigation }: Props) => {
   const { userId } = useSelector(selectAuth);
-  const { data, isLoading, error } = User.useGetUserExercises(userId);
+  const { data, isLoading, error, refetch } = User.useGetUserExercises(userId);
 
   return (
-    <SafeAreaView className="flex-1 relative">
+    <SafeAreaView className="flex-1 relative bg-white">
       {isLoading ? (
-        <ActivityIndicator />
+        <ActivityIndicator className="flex-1" />
       ) : (
         <View className="absolute right-5 bottom-5 z-30">
           <RoundedButton
@@ -37,7 +38,12 @@ const HomeScreen = ({ navigation }: Props) => {
           />
         </View>
       )}
-      <View className="flex-1 bg-white p-6">
+      <ScrollView
+        className="flex-1 bg-white p-6"
+        refreshControl={
+          <RefreshControl refreshing={isLoading} onRefresh={refetch} />
+        }
+      >
         {data?.map((exercise: Exercise) => (
           <TouchableOpacity
             key={exercise.id}
@@ -63,7 +69,7 @@ const HomeScreen = ({ navigation }: Props) => {
             </View>
           </TouchableOpacity>
         ))}
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
