@@ -21,19 +21,19 @@ export const Name = z
     required_error: "Name is required",
   })
   .max(30, "Name can be 30 chars long")
-  .min(1);
+  .min(1, { message: "Name can't be empty" });
 
 export const Description = z
   .string({
     required_error: "Description is required",
   })
   .max(350, { message: "Description length is too long (350)" })
-  .min(10);
+  .min(10, { message: "Description must be at least 10 characters" });
 
 export const ExerciseSchema = z.object({
   id: Id,
   name: Name,
-  description: Description,
+  description: Description.optional(),
   image: z.string().optional(),
   userId: userId,
   categoryId: categoryId,
