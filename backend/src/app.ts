@@ -20,7 +20,6 @@ app.use(
 );
 
 app.get("/api/healthcheck", (req: Request, res: Response) => {
-  console.log("SESSION: " + req.session.userId);
   res.send(JSON.stringify("Hello"));
 });
 

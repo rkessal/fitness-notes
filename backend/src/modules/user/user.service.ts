@@ -19,7 +19,6 @@ export async function createUser(input: CreateUserInput["body"]) {
 }
 
 export async function findUser(input: CreateUserInput["body"]["email"]) {
-  // console.log(input);
   const user = await prisma.user.findUnique({
     where: {
       email: input.toLocaleLowerCase(),

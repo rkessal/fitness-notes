@@ -39,7 +39,6 @@ export async function getUserByIdHandler(
   req: Request<GetUserByIdInput["params"]>,
   res: Response
 ) {
-  console.log("User: ", req);
   try {
     const user = await findUserById(req.params);
     if (user) {
@@ -83,7 +82,6 @@ export async function editUserPasswordHandler(
     if (user) {
       if (user.id === req.session.userId) {
         const userPassword = await getUserPassword(req);
-        console.log("UserPassword", userPassword);
         if (userPassword) {
           const check = await checkPassword(
             userPassword.password,

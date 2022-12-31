@@ -38,6 +38,7 @@ export async function findSets(input: GetSetsInput) {
     include: {
       Exercise: true,
     },
+    
   });
 }
 
