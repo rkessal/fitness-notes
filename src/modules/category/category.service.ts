@@ -21,7 +21,6 @@ export async function createExerciseCategory(
 export async function findExerciseCategoryById(
   input: GetExerciseCategoryByIdType["params"]
 ) {
-  console.log(input.id);
   return prisma.exerciseCategory.findUnique({
     where: {
       id: input.id,

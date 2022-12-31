@@ -44,7 +44,6 @@ export async function getExerciseCategoryByIdHandler(
 ) {
   try {
     const category = await findExerciseCategoryById(req.params);
-    console.log(category);
     if (category) {
       return res.send(category);
     }
