@@ -12,11 +12,7 @@ export const throwErrorMessage = (error: any) => {
     if (error.response?.status === 401) {
       store.dispatch(signout());
     }
-    throw (
-      error.response?.data ||
-      error.response?.data.message ||
-      error.response?.data.issues[0].message
-    );
+    throw error.response?.data.message;
   }
 };
 

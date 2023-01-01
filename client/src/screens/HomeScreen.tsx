@@ -50,23 +50,11 @@ const HomeScreen = ({ navigation }: Props) => {
             onPress={() =>
               navigation.navigate("Exercise", {
                 id: exercise.id,
+                title: exercise.name,
               })
             }
           >
-            <View className="flex-row space-x-2 mb-3 justify-center items-center">
-              <Image
-                source={{
-                  uri: exercise.image,
-                }}
-                className="h-24 w-24"
-              />
-              <View className="flex-1">
-                <Title intent="subtitle">{exercise.name}</Title>
-                <Text numberOfLines={2} className="truncate">
-                  {exercise.description}
-                </Text>
-              </View>
-            </View>
+            <ExerciseCard title={exercise.name} image={exercise.gifUrl} />
           </TouchableOpacity>
         ))}
       </ScrollView>

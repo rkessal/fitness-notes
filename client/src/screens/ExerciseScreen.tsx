@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   GestureResponderEvent,
 } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { RootStackParamList, Set as TSet } from "../types/types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Title from "../components/ui/Title";
@@ -38,6 +38,10 @@ const ExerciseScreen = ({ route, navigation }: Props) => {
 
   const WEIGHT_MODIFIER = 2.5;
   const REP_MODIFIER = 1;
+
+  useEffect(() => {
+    navigation.setOptions({ title: route.params.title });
+  }, []);
 
   const handleWeight = (action: "add" | "remove") => {
     setWeight((prev) => {
@@ -81,7 +85,7 @@ const ExerciseScreen = ({ route, navigation }: Props) => {
               refetch();
             },
             onError: (error) => {
-              showToast(toast, "danger", error as string);
+              // showToast(toast, "danger", error as string);
               console.log(error);
             },
           }

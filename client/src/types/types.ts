@@ -1,7 +1,14 @@
 export type RootStackParamList = {
-  ExerciseDetails: { id: string };
+  ExerciseDetails: {
+    id: string;
+    image: string;
+    title: string;
+    bodyPart: string;
+    equipment: string;
+    target: string;
+  };
   HomeStack: undefined;
-  Exercise: { id: string };
+  Exercise: { id: string; title: string };
   AddExercise: undefined;
   AddCustomExercise: undefined;
   Timer: undefined;
@@ -26,13 +33,12 @@ export type Category = {
 export type Exercise = {
   id: string;
   name: string;
-  description?: string;
-  image?: string;
-  createdAt: string;
-  updatedAt: string;
-  userId: string;
+  bodyPart: string;
+  equipment: string;
+  target: string;
+  gifUrl?: string;
   users: Omit<User[], "createdAt" | "exercises">;
-  categories: Omit<Category[], "exercises">;
+  sets: Set[];
 };
 
 export type Set = {

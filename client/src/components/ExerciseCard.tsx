@@ -2,29 +2,21 @@ import { NavigationProp } from "@react-navigation/native";
 import {
   View,
   Text,
-  Image,
   TouchableOpacity,
   GestureResponderEvent,
+  ActivityIndicator,
+  Image,
 } from "react-native";
 import Title from "./ui/Title";
 
 type Props = {
-  navigation?: NavigationProp<any, any>;
-  id: string;
   title: string;
   image?: string;
 };
 
-const ExerciseCard = ({ image, title, navigation, id }: Props) => {
+const ExerciseCard = ({ image, title }: Props) => {
   return (
-    <TouchableOpacity
-      className="flex-row"
-      onPress={() =>
-        navigation?.navigate("ExerciseDetails", {
-          id: id,
-        })
-      }
-    >
+    <View className="flex-row">
       <Image
         source={{
           uri: image,
@@ -32,9 +24,11 @@ const ExerciseCard = ({ image, title, navigation, id }: Props) => {
         className="h-24 w-24"
       />
       <View className="ml-3 justify-center">
-        <Title intent="subtitle">{title}</Title>
+        <Title intent="subtitle">
+          {title && title[0].toUpperCase() + title.slice(1)}
+        </Title>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 

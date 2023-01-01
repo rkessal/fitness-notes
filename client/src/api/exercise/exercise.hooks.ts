@@ -8,7 +8,7 @@ import {
 } from "./exercise.service";
 
 export default {
-  useGetExercises: () =>
+  useGetExercises: (): UseQueryResult<Exercise[]> =>
     useQuery("getExercises", () => {
       return getExercises();
     }),
@@ -18,9 +18,9 @@ export default {
       return getExerciseById(exerciseId);
     }),
 
-  useAddExerciseToWorkout: (exerciseId: string) =>
-    useMutation(async (userId: string) => {
-      return await addExerciseToWorkout(exerciseId, userId);
+  useAddExerciseToWorkout: () =>
+    useMutation(async (payload: { exerciseId: string; userId: string }) => {
+      return await addExerciseToWorkout(payload.exerciseId, payload.userId);
     }),
 
   useCreateCustomExercise: () =>

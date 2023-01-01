@@ -92,7 +92,7 @@ const ProfileScreen = () => {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView className="flex-1 pt-5">
-        <View className="flex-1 items-center justify-center px-6 bg-white space-y-12">
+        <View className="flex-1 items-center justify-center px-6 pb-16 bg-white space-y-12">
           <View className="w-full space-y-6">
             <View className="space-y-2">
               <Text className="self-start text-2xl font-bold mb-2">
@@ -172,11 +172,8 @@ const ProfileScreen = () => {
               )}
             </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            className="p-5 bg-red-500 rounded-2xl w-full items-center"
-            onPress={() => handleSignout()}
-          >
-            <Text className="text-white font-semibold">Logout</Text>
+          <TouchableOpacity onPress={() => handleSignout()}>
+            <Text className="text-red-500 font-semibold">Logout</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

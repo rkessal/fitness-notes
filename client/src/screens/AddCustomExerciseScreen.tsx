@@ -59,13 +59,12 @@ const AddCustomExerciseScreen = (props: Props) => {
           showToast(toast, "success", "Exercise added");
         },
         onError: (error) => {
+          console.log(error);
           showToast(toast, "danger", error as string);
         },
       }
     );
   };
-
-  console.log("SELECTED: ", name);
 
   return (
     <SafeAreaView className="flex-1 bg-white relative">

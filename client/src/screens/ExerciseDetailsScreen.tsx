@@ -20,58 +20,61 @@ import { useToast } from "react-native-toast-notifications";
 type Props = NativeStackScreenProps<RootStackParamList, "ExerciseDetails">;
 
 const ExerciseDetailsScreen = ({ route }: Props) => {
-  const { id } = route.params;
-  const { data, error, isLoading } = Exercise.useGetExerciseById(id);
+  const { id, title, bodyPart, image, equipment, target } = route.params;
   const { userId } = useSelector(selectAuth);
-  const workout = Exercise.useAddExerciseToWorkout(id);
+  const workout = Exercise.useAddExerciseToWorkout();
   const toast = useToast();
 
   const addExerciseToWorkout = () => {
     if (userId) {
-      workout.mutate(userId, {
-        onSuccess: () => {
-          showToast(toast, "success", "Exercise added to workout");
+      workout.mutate(
+        {
+          exerciseId: id,
+          userId,
         },
-        onError: (error) => {
-          showToast(toast, "danger", error as string);
-        },
-      });
+        {
+          onSuccess: () => {
+            showToast(toast, "success", "Exercise added to workout");
+          },
+          onError: (error) => {
+            showToast(toast, "danger", error as string);
+          },
+        }
+      );
     }
   };
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      {isLoading ? (
-        <Text>Loading...</Text>
-      ) : (
-        <View className="flex-1 p-6 space-y-12">
-          <Image
-            source={{
-              uri: data?.image,
-            }}
-            className="w-full h-1/3"
-          />
-          <View>
-            <Title intent="title">{data?.name}</Title>
-          </View>
-          <View>
-            <Title intent="subtitle">Description</Title>
-            <Text>{data?.description}</Text>
-          </View>
-          <View>
-            <Title intent="subtitle">Categories</Title>
-            {data?.categories.map((category: Category) => (
-              <Text key={category.id}>{category.name}</Text>
-            ))}
-          </View>
-          <TouchableOpacity
-            className="p-5 bg-brand rounded-2xl w-full items-center"
-            onPress={() => addExerciseToWorkout()}
-          >
-            <Text className="text-white font-semibold">Add to workout</Text>
-          </TouchableOpacity>
+      <View className="flex-1 p-6 space-y-12">
+        <Image
+          source={{
+            uri: image,
+          }}
+          className="w-full h-1/3"
+        />
+        <View>
+          <Title intent="title">{title}</Title>
         </View>
-      )}
+        <View>
+          <Title intent="subtitle">Category</Title>
+          <Text>{bodyPart}</Text>
+        </View>
+        <View>
+          <Title intent="subtitle">Targeted Muscle</Title>
+          <Text>{target}</Text>
+        </View>
+        <View>
+          <Title intent="subtitle">Equipment</Title>
+          <Text>{equipment}</Text>
+        </View>
+        <TouchableOpacity
+          className="p-5 bg-brand rounded-2xl w-full items-center"
+          onPress={() => addExerciseToWorkout()}
+        >
+          <Text className="text-white font-semibold">Add to workout</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };

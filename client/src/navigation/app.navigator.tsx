@@ -55,7 +55,11 @@ const AppNavigator = (props: Props) => {
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name="HomeStack" component={HomeStack} />
-      <Stack.Screen name="AddExercise" component={AddExerciseScreen} />
+      <Stack.Screen
+        name="AddExercise"
+        component={AddExerciseScreen}
+        options={{ headerShown: true }}
+      />
       <Stack.Screen
         name="Exercise"
         component={ExerciseScreen}
