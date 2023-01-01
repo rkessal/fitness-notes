@@ -5,7 +5,6 @@ import { exerciseRoutes } from "./modules/exercise/exercise.routes";
 import expressSession, { RedisStore } from "./middleware/session";
 import { sessionRoutes } from "./modules/session/session.routes";
 import cors from "cors";
-import { categoryRoutes } from "./modules/category/category.routes";
 import { setRoutes } from "./modules/set/set.routes";
 import config from "../config/config";
 
@@ -28,6 +27,5 @@ app.listen(port, async () => {
   userRoutes(app);
   exerciseRoutes(app);
   sessionRoutes(app);
-  categoryRoutes(app);
   setRoutes(app);
 });
