@@ -11,9 +11,7 @@ declare module "express-session" {
 
 const cookieSecret =
   config.NODE_ENV === "production" ? config.COOKIE_SECRET : "randomsecret";
-const redisClient = new Redis(
-  config.NODE_ENV === "production" ? config.REDIS_URL : ""
-);
+const redisClient = new Redis(config.REDIS_URL);
 export const RedisStore = connectRedis(session);
 
 const expressSession = session({

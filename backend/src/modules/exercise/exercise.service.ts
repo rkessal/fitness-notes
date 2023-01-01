@@ -1,4 +1,5 @@
 import prisma from "../../utils/prisma";
+import axios from "axios";
 import {
   AddExerciseToWorkoutInput,
   CreateExerciseInput,
@@ -7,34 +8,17 @@ import {
   GetExerciseByIdInput,
   GetExerciseInput,
 } from "./exercise.dto";
+import sanitizedConfig from "../../../config/config";
 
 export async function createExercise(input: CreateExerciseInput["body"]) {
-  return prisma.exercise.create({
+  return prisma.exercise.createMany({
     data: {
-      name: input.name,
-      description: input.description,
-      image: input.image,
-      createdBy: {
-        connect: {
-          id: input.userId,
-        },
-      },
-      users: {
-        connect: {
-          id: input.userId,
-        },
-      },
-      categories: {
-        connect: input.categories.map((category) => ({
-          id: category.categoryId,
-        })),
-      },
+      ...input,
     },
   });
 }
 
 export async function findExerciseById(input: GetExerciseByIdInput["params"]) {
-  console.log("HELLO: ", input);
   return prisma.exercise.findUnique({
     where: {
       id: input.id,
@@ -48,50 +32,22 @@ export async function findExerciseById(input: GetExerciseByIdInput["params"]) {
           lastname: true,
         },
       },
-      categories: true,
     },
   });
-}
-
-export async function findCreatedExercisesByUserId(
-  input: GetExerciseInput["query"]
-) {
-  console.log(input);
-  if (input) {
-    return prisma.exercise.findMany({
-      where: {
-        userId: input.userId,
-      },
-      include: {
-        users: {
-          select: {
-            id: true,
-            email: true,
-            name: true,
-            lastname: true,
-          },
-        },
-        categories: true,
-      },
-    });
-  }
-  return;
 }
 
 export async function findExercises() {
-  return prisma.exercise.findMany({
-    include: {
-      users: {
-        select: {
-          id: true,
-          email: true,
-          name: true,
-          lastname: true,
-        },
-      },
-      categories: true,
+  const response = await axios({
+    url: `https://exercisedb.p.rapidapi.com/exercises`,
+    method: "get",
+    timeout: 8000,
+    headers: {
+      "X-RapidAPI-Key": sanitizedConfig.RAPIDAPIKEY,
+      "X-RapidAPI-Host": sanitizedConfig.RAPIDAPIHOST,
     },
   });
+
+  return response.data;
 }
 
 export async function editExercise(input: EditExerciseInput) {
@@ -135,4 +91,20 @@ export async function findExercisesByUserId(input: GetExerciseInput) {
       exercises: true,
     },
   });
+}
+
+export async function findExerciseByIdFromApi(
+  input: GetExerciseByIdInput["params"]
+) {
+  const response = await axios({
+    url: `https://exercisedb.p.rapidapi.com/exercises/exercise/${input.id}`,
+    method: "get",
+    timeout: 8000,
+    headers: {
+      "X-RapidAPI-Key": sanitizedConfig.RAPIDAPIKEY,
+      "X-RapidAPI-Host": sanitizedConfig.RAPIDAPIHOST,
+    },
+  });
+
+  return response.data;
 }

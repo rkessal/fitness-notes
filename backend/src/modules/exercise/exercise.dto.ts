@@ -30,29 +30,21 @@ export const Description = z
   .max(350, { message: "Description length is too long (350)" })
   .min(10, { message: "Description must be at least 10 characters" });
 
+const Category = z.string({
+  required_error: "Category is required",
+});
+
 export const ExerciseSchema = z.object({
-  id: Id,
+  id: z.string(),
   name: Name,
-  description: Description.optional(),
-  image: z.string().optional(),
-  userId: userId,
-  categoryId: categoryId,
+  gifUrl: z.string(),
+  bodyPart: z.string(),
+  equipment: z.string(),
+  target: z.string(),
 });
 
 export const CreateExerciseSchema = z.object({
-  body: z.object({
-    name: Name,
-    description: Description,
-    image: z.string().optional(),
-    userId: userId,
-    categories: z
-      .array(
-        z.object({
-          categoryId: z.string(),
-        })
-      )
-      .nonempty(),
-  }),
+  body: ExerciseSchema,
 });
 
 export const GetExerciseByIdSchema = z.object({
@@ -84,7 +76,7 @@ export const EditExerciseSchema = z.object({
       name: Name,
       description: Description,
       image: z.string(),
-      categoryId: categoryId,
+      categoryId: z.string(),
     })
     .partial(),
 });

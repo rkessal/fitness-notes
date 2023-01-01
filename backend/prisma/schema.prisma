@@ -11,36 +11,26 @@ datasource db {
 }
 
 model User {
-  id               String     @id @default(cuid())
-  email            String     @unique
-  password         String
-  name             String?
-  lastname         String?
-  createdAt        DateTime   @default(now())
-  exercises        Exercise[] @relation("ExercisesAdded")
-  ExercisesCreated Exercise[] @relation("createdBy")
-  Set              Set[]
+  id        String     @id @default(cuid())
+  email     String     @unique
+  password  String
+  name      String?
+  lastname  String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  exercises Exercise[]
+  Set       Set[]
 }
 
 model Exercise {
-  id          String             @id @default(cuid())
-  name        String
-  description String
-  image       String?
-  categories  ExerciseCategory[]
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
-  users       User[]             @relation("ExercisesAdded")
-  sets        Set[]
-  createdBy   User               @relation("createdBy", fields: [userId], references: [id])
-  userId      String
-}
-
-model ExerciseCategory {
-  id        String     @id @default(cuid())
+  id        String @id
   name      String
-  image     String?
-  exercises Exercise[]
+  gifUrl    String
+  bodyPart  String
+  equipment String
+  target    String
+  users     User[]
+  sets      Set[]
 }
 
 model Set {

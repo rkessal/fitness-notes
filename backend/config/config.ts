@@ -15,6 +15,8 @@ interface ENV {
   REDIS_URL: string | undefined;
   COOKIE_SECRET: string | undefined;
   COOKIE_NAME: string | undefined;
+  RAPIDAPIKEY: string | undefined;
+  RAPIDAPIHOST: string | undefined;
 }
 
 interface Config {
@@ -24,6 +26,8 @@ interface Config {
   REDIS_URL: string;
   COOKIE_SECRET: string;
   COOKIE_NAME: string;
+  RAPIDAPIKEY: string;
+  RAPIDAPIHOST: string;
 }
 
 // Loading process.env as ENV interface
@@ -36,6 +40,8 @@ const getConfig = (): ENV => {
     COOKIE_SECRET: process.env.COOKIE_SECRET,
     DATABASE_URL: process.env.DATABASE_URL,
     REDIS_URL: process.env.REDIS_URL,
+    RAPIDAPIKEY: process.env.RAPIDAPIKEY,
+    RAPIDAPIHOST: process.env.RAPIDAPIHOST,
   };
 };
 
