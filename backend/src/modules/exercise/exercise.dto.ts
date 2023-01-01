@@ -1,6 +1,5 @@
 import { number, z } from "zod";
 import { Id as userId, UserSchema } from "../user/user.dto";
-import { Id as categoryId } from "../category/category.dto";
 
 export const Weight = z
   .number({
