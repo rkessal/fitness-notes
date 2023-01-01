@@ -19,6 +19,7 @@ import {
   editExercise,
   addExerciseToWorkout,
   findExercisesByUserId,
+  findExerciseByIdFromApi,
 } from "./exercise.service";
 
 export async function createExerciseHandler(
@@ -26,18 +27,8 @@ export async function createExerciseHandler(
   res: Response
 ) {
   try {
-    req.body.categories.forEach(async (c) => {
-      const category = await findExerciseCategoryById({
-        id: c.categoryId,
-      });
-      if (!category) {
-        return res.status(404).send({ message: "Category not found" });
-      }
-    });
     const exercise = await createExercise({
       ...req.body,
-      categories: req.body.categories,
-      userId: req.session.userId,
     });
     return res.send(exercise);
   } catch (error: any) {
@@ -65,7 +56,7 @@ export async function getExerciseHandler(
     const exercises = await findExercises();
     return res.send(exercises);
   } catch (error: any) {
-    return res.status(409).send(error.message);
+    return res.status(409).send(error);
   }
 }
 
@@ -98,7 +89,7 @@ export async function editExerciseHandler(
     return res.status(404).send({ message: "Exercise not found" });
   } catch (error: any) {
     console.log(error);
-    res.status(409).send(error.message);
+    res.status(409).send(error);
   }
 }
 
@@ -117,7 +108,7 @@ export async function deleteExerciseHandler(
     }
     return res.status(404).send({ message: "Exercise not found" });
   } catch (error: any) {
-    res.status(409).send(error.message);
+    res.status(409).send(error);
   }
 }
 
@@ -130,13 +121,14 @@ export async function addExerciseToWorkoutHandler(
   res: Response
 ) {
   try {
-    const exercise = await findExerciseById(req.params);
-    if (exercise) {
-      const response = await addExerciseToWorkout(req);
-      return res.send(response);
+    let exercise = await findExerciseById(req.params);
+    if (!exercise) {
+      const exerciseFromApi = await findExerciseByIdFromApi(req.params);
+      await createExercise(exerciseFromApi);
     }
-    return res.status(404).send({ message: "Exercise not found" });
+    const response = await addExerciseToWorkout(req);
+    return res.send(response);
   } catch (error: any) {
-    res.status(409).send(error.message);
+    res.status(409).send(error);
   }
 }

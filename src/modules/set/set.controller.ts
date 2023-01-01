@@ -36,7 +36,7 @@ export async function createSetHandler(
     }
     return res.status(403).send({ message: "Invalid credentials" });
   } catch (error: any) {
-    return res.status(409).send({ message: error.message });
+    return res.status(409).send(error);
   }
 }
 
@@ -59,7 +59,7 @@ export async function getSetsHandler(
     }
     res.status(401).send({ message: "Invalid credentials" });
   } catch (error: any) {
-    return res.status(409).send({ message: error.message });
+    return res.status(409).send(error);
   }
 }
 
@@ -74,7 +74,7 @@ export async function getSetByIdHandler(
     }
     res.status(404).send({ message: "Set not found" });
   } catch (error: any) {
-    return res.status(409).send({ message: error.message });
+    return res.status(409).send(error);
   }
 }
 
@@ -93,7 +93,7 @@ export async function editSetHandler(
     }
     return res.status(404).send({ message: "Set not found" });
   } catch (error: any) {
-    return res.status(409).send({ message: error.message });
+    return res.status(409).send(error);
   }
 }
 
@@ -105,7 +105,7 @@ export async function deleteSetHandler(
     const set = await findSetById(req.params);
     if (set?.exerciseId) {
       const exercise = await findExerciseById({ id: set.exerciseId });
-      if (exercise?.userId === req.session.userId) {
+      if (set?.userId === req.session.userId) {
         const response = await deleteSet(req.params);
         return res.send(response);
       }
@@ -113,6 +113,6 @@ export async function deleteSetHandler(
     }
     return res.status(404).send({ message: "Set not found" });
   } catch (error: any) {
-    return res.status(409).send({ message: error.message });
+    return res.status(409).send(error);
   }
 }

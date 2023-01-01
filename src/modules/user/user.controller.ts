@@ -46,7 +46,7 @@ export async function getUserByIdHandler(
     }
     return res.status(404).send({ message: "User not found" });
   } catch (error: any) {
-    return res.status(409).send({ message: error.message });
+    return res.status(409).send(error);
   }
 }
 
@@ -65,7 +65,7 @@ export async function editUserHandler(
     }
     return res.status(404).send({ message: "User not found" });
   } catch (error: any) {
-    return res.status(409).send({ message: error.message });
+    return res.status(409).send(error);
   }
 }
 
@@ -98,6 +98,6 @@ export async function editUserPasswordHandler(
     }
     return res.status(404).send({ message: "User not found" });
   } catch (error: any) {
-    return res.status(409).send({ message: error.message });
+    return res.status(409).send(error);
   }
 }

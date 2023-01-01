@@ -12,7 +12,7 @@ const validate =
       });
       next();
     } catch (e: any) {
-      return res.status(400).json(e);
+      return res.status(400).json(e.issues[0]);
     }
   };
 

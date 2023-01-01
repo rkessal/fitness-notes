@@ -23,7 +23,7 @@ export async function createSessionHandler(
       message: "Invalid credentials",
     });
   } catch (error: any) {
-    return res.status(409).send(error.message);
+    return res.status(409).send(error);
   }
 }
 
@@ -33,13 +33,13 @@ export function deleteSessionHandler(req: Request, res: Response) {
     req.session.destroy((error) => {
       if (error) {
         logger.error(error);
-        res.status(500).send(error.message);
+        res.status(500).send(error);
       }
       res.clearCookie(cookieName);
       return res.status(200).send("OK");
     });
   } catch (error: any) {
-    return res.status(409).send(error.message);
+    return res.status(409).send(error);
   }
 }
 
@@ -51,6 +51,6 @@ export function getSessionHandler(req: Request, res: Response) {
     }
     return res.status(404).send("User not found");
   } catch (error: any) {
-    return res.status(409).send(error.message);
+    return res.status(409).send(error);
   }
 }
