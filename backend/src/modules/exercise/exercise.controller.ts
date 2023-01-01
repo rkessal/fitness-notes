@@ -1,6 +1,5 @@
 import { query, Request, Response } from "express";
 import logger from "../../utils/logger";
-import { findExerciseCategoryById } from "../category/category.service";
 import { findUser, findUserById } from "../user/user.service";
 import {
   AddExerciseToWorkoutInput,
@@ -14,7 +13,6 @@ import {
   createExercise,
   findExercises,
   findExerciseById,
-  findCreatedExercisesByUserId,
   deleteExercise,
   editExercise,
   addExerciseToWorkout,
@@ -80,10 +78,10 @@ export async function editExerciseHandler(
   try {
     const exercise = await findExerciseById(req.params);
     if (exercise) {
-      if (exercise.userId === req.session.userId) {
-        const response = await editExercise(req);
-        return res.send(response);
-      }
+      // if (exercise.userId === req.session.userId) {
+      const response = await editExercise(req);
+      return res.send(response);
+      // }
       return res.status(403).send({ message: "Invalid credentials" });
     }
     return res.status(404).send({ message: "Exercise not found" });
@@ -100,10 +98,10 @@ export async function deleteExerciseHandler(
   try {
     const exercise = await findExerciseById(req.params);
     if (exercise) {
-      if (exercise.userId === req.session.userId) {
-        const response = await deleteExercise(req.params);
-        return res.send(response);
-      }
+      // if (exercise.userId === req.session.userId) {
+      const response = await deleteExercise(req.params);
+      return res.send(response);
+      // }
       return res.status(403).send({ message: "Invalid credentials" });
     }
     return res.status(404).send({ message: "Exercise not found" });
