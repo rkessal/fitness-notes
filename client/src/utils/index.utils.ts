@@ -15,6 +15,7 @@ export const showToast = (
       width: "100%",
       paddingVertical: 20,
       borderRadius: 16,
+      zIndex: 99,
     },
     textStyle: {
       fontWeight: "700",

@@ -21,29 +21,46 @@ type Props = {
   navigation: NavigationProp<any, any>;
 };
 
+const INCREMENTER = 15;
+
 const AddExerciseScreen = ({ navigation }: Props) => {
   const { data, error, isLoading, isFetched } = Exercise.useGetExercises();
   const [exercises, setExercises] = useState<TExercise[]>();
-  const [numberOfExercises, setNumberOfExercises] = useState(25);
+  const [numberOfExercises, setNumberOfExercises] = useState(INCREMENTER);
+  const [filterName, setFilterName] = useState("");
+  const [tempData, setTempData] = useState<TExercise[]>([]);
+
+  let filteredList: TExercise[] | undefined = [];
+
   useEffect(() => {
     if (data) {
-      setExercises(data.slice(0, numberOfExercises));
+      setExercises(data?.slice(0, numberOfExercises));
+      setTempData(data);
     }
   }, [data]);
+
+  const filterByName = (name: string) => {
+    filteredList = data?.filter((exercise) =>
+      exercise.name.toLowerCase().includes(name.toLowerCase())
+    );
+    setNumberOfExercises(INCREMENTER);
+    setExercises(filteredList?.slice(0, numberOfExercises));
+    setTempData(filteredList!);
+  };
 
   const loadMore = () => {
     setExercises((prev) => [
       ...prev!,
-      ...data?.slice(numberOfExercises, numberOfExercises + 25)!,
+      ...tempData?.slice(numberOfExercises, numberOfExercises + INCREMENTER)!,
     ]);
-    setNumberOfExercises((prev) => prev + 25);
+    setNumberOfExercises((prev) => prev + INCREMENTER);
   };
-  console.log(exercises?.length);
-  // console.log(numberOfExercises);
 
-  const renderItem: ListRenderItem<TExercise> = ({ item }) => (
+  console.log(exercises?.length);
+
+  const renderItem: ListRenderItem<TExercise> = ({ item, index }) => (
     <TouchableOpacity
-      key={item.id}
+      key={index}
       onPress={() =>
         navigation.navigate("ExerciseDetails", {
           id: item.id,
@@ -60,8 +77,8 @@ const AddExerciseScreen = ({ navigation }: Props) => {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-white relative">
-      <View className="absolute right-5 bottom-10 z-30">
+    <SafeAreaView className="relative flex-1 bg-white">
+      <View className="absolute z-30 right-5 bottom-10">
         <RoundedButton
           onPress={() => navigation.navigate("AddCustomExercise")}
           name="plus"
@@ -70,11 +87,16 @@ const AddExerciseScreen = ({ navigation }: Props) => {
       <View className="flex-1">
         <View className="flex-1 p-6 space-y-10">
           <TextInput
-            className="bg-gray-100 rounded-xl w-full p-5"
+            className="w-full p-5 bg-gray-100 rounded-xl"
             placeholder="Search"
+            value={filterName}
+            onChangeText={(e) => {
+              setFilterName(e);
+              filterByName(e);
+            }}
           />
           {isLoading && (
-            <View className="flex-1 justify-center items-center">
+            <View className="items-center justify-center flex-1">
               <ActivityIndicator />
             </View>
           )}
@@ -85,6 +107,7 @@ const AddExerciseScreen = ({ navigation }: Props) => {
               keyExtractor={(item) => item.id}
               onEndReached={() => loadMore()}
               onEndReachedThreshold={0}
+              showsVerticalScrollIndicator={false}
               getItemLayout={(data, index) => ({
                 length: 96,
                 offset: 96 * index,
