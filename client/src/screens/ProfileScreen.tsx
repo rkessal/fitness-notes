@@ -92,16 +92,16 @@ const ProfileScreen = () => {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView className="flex-1 pt-5">
-        <View className="flex-1 items-center justify-center px-6 pb-16 bg-white space-y-12">
+        <View className="items-center justify-center flex-1 px-6 pb-16 space-y-12 bg-white">
           <View className="w-full space-y-6">
             <View className="space-y-2">
-              <Text className="self-start text-2xl font-bold mb-2">
+              <Text className="self-start mb-2 text-2xl font-bold">
                 User Information
               </Text>
               <View className="space-y-2">
                 <Text className="font-semibold">Email</Text>
                 <TextInput
-                  className="w-full rounded-2xl  p-5 bg-gray-50 text-gray-400"
+                  className="w-full p-5 text-gray-400 rounded-2xl bg-gray-50"
                   editable={false}
                   selectTextOnFocus={false}
                   value={email}
@@ -109,41 +109,41 @@ const ProfileScreen = () => {
               </View>
               <Text className="font-semibold">Name</Text>
               <TextInput
-                className="w-full rounded-2xl  p-5 bg-gray-50"
+                className="w-full p-5 rounded-2xl bg-gray-50"
                 placeholder="Name"
                 onChangeText={setName}
                 value={name}
               />
             </View>
             <View className="space-y-2">
-              <Text className="font-semibold">Lastname</Text>
+              <Text className="font-semibold">Last name</Text>
               <TextInput
-                className="w-full rounded-2xl p-5 bg-gray-50"
-                placeholder="LastName"
+                className="w-full p-5 rounded-2xl bg-gray-50"
+                placeholder="Last name"
                 onChangeText={setLastname}
                 value={lastname}
               />
             </View>
             <TouchableOpacity
-              className="p-5 bg-brand rounded-2xl w-full items-center"
+              className="items-center w-full p-5 bg-brand rounded-2xl"
               onPress={() => handleEditUserInfo()}
             >
               {editUserData.isLoading ? (
                 <ActivityIndicator color="#fffff" />
               ) : (
-                <Text className="text-white font-semibold">Update</Text>
+                <Text className="font-semibold text-white">Update</Text>
               )}
             </TouchableOpacity>
           </View>
           <View className="w-full space-y-6">
             <View className="space-y-2">
-              <Text className="self-start text-2xl font-bold mb-2">
+              <Text className="self-start mb-2 text-2xl font-bold">
                 Change Password
               </Text>
               <View className="space-y-2">
                 <Text className="font-semibold">Current Password</Text>
                 <TextInput
-                  className="w-full rounded-2xl  p-5 bg-gray-50 "
+                  className="w-full p-5 rounded-2xl bg-gray-50 "
                   placeholder="Current Password"
                   onChangeText={setPassword}
                   secureTextEntry
@@ -152,7 +152,7 @@ const ProfileScreen = () => {
               <View className="space-y-2">
                 <Text className="font-semibold">New Password</Text>
                 <TextInput
-                  className="w-full rounded-2xl  p-5 bg-gray-50"
+                  className="w-full p-5 rounded-2xl bg-gray-50"
                   placeholder="New Password"
                   onChangeText={setCandidatePassword}
                   secureTextEntry
@@ -160,20 +160,20 @@ const ProfileScreen = () => {
               </View>
             </View>
             <TouchableOpacity
-              className="p-5 bg-brand rounded-2xl w-full items-center"
+              className="items-center w-full p-5 bg-brand rounded-2xl"
               onPress={() => handleEditUserPassword()}
             >
               {editUserPassword.isLoading ? (
                 <ActivityIndicator />
               ) : (
-                <Text className="text-white font-semibold">
+                <Text className="font-semibold text-white">
                   Change Password
                 </Text>
               )}
             </TouchableOpacity>
           </View>
           <TouchableOpacity onPress={() => handleSignout()}>
-            <Text className="text-red-500 font-semibold">Logout</Text>
+            <Text className="font-semibold text-red-500">Logout</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
