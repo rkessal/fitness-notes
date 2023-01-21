@@ -11,6 +11,8 @@ client/*.key
 client/*.mobileprovision
 client/*.orig.*
 client/web-build/
+web/node_modules
+web/.env
 
 # macOS
 .DS_Store
