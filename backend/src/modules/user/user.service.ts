@@ -8,6 +8,8 @@ import {
   GetUserByIdInput,
 } from "./user.dto";
 import argon2 from "argon2";
+import transporter from "../../utils/mailer";
+import config from "../../../config/config";
 
 export async function createUser(input: CreateUserInput["body"]) {
   const password = await argon2.hash(input.password);
@@ -92,6 +94,7 @@ export async function generateUserPasswordToken(
   const payload = { email: input.params.userEmail };
   const options = { expiresIn: "1h" };
   const token = jwt.sign(payload, secret, options);
+  sendPasswordToken(input.params.userEmail, token);
   return await prisma.user.update({
     where: {
       email: input.params.userEmail,
@@ -99,5 +102,27 @@ export async function generateUserPasswordToken(
     data: {
       token: token,
     },
+  });
+}
+
+export function sendPasswordToken(
+  input: GeneratePasswordTokenInput["params"]["userEmail"],
+  token: string
+) {
+  const mailOptions = {
+    from: config.MAILUSER,
+    to: input,
+    subject: "Password Reset Request",
+    text:
+      "Here is your link to reset your password: fitness-notes.errka.dev/resetPassword/" +
+      token,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log(info.response);
+    }
   });
 }

@@ -17,6 +17,8 @@ interface ENV {
   COOKIE_NAME: string | undefined;
   RAPIDAPIKEY: string | undefined;
   RAPIDAPIHOST: string | undefined;
+  MAILUSER: string | undefined;
+  MAILPASS: string | undefined;
 }
 
 interface Config {
@@ -28,6 +30,8 @@ interface Config {
   COOKIE_NAME: string;
   RAPIDAPIKEY: string;
   RAPIDAPIHOST: string;
+  MAILUSER: string;
+  MAILPASS: string;
 }
 
 // Loading process.env as ENV interface
@@ -42,6 +46,8 @@ const getConfig = (): ENV => {
     REDIS_URL: process.env.REDIS_URL,
     RAPIDAPIKEY: process.env.RAPIDAPIKEY,
     RAPIDAPIHOST: process.env.RAPIDAPIHOST,
+    MAILUSER: process.env.MAILUSER,
+    MAILPASS: process.env.MAILPASS,
   };
 };
 
