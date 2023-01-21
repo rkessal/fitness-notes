@@ -5,12 +5,14 @@ import {
   createUserHandler,
   editUserHandler,
   editUserPasswordHandler,
+  generateUserPasswordTokenController,
   getUserByIdHandler,
 } from "./user.controller";
 import {
   CreateUserSchema,
   EditPasswordSchema,
   EditUserSchema,
+  GeneratePasswordTokenSchema,
   GetUserByIdSchema,
   GetUserSchema,
 } from "./user.dto";
@@ -27,5 +29,10 @@ export function userRoutes(app: Express) {
     "/api/userPassword/:userId",
     [requireAuth, validate(EditPasswordSchema)],
     editUserPasswordHandler
+  );
+  app.post(
+    "/api/generatePasswordToken/:userEmail",
+    validate(GeneratePasswordTokenSchema),
+    generateUserPasswordTokenController
   );
 }

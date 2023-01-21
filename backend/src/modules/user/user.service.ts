@@ -1,8 +1,10 @@
+import * as jwt from "jsonwebtoken";
 import prisma from "../../utils/prisma";
 import {
   CreateUserInput,
   EditUserInput,
   EditUserPasswordInput,
+  GeneratePasswordTokenInput,
   GetUserByIdInput,
 } from "./user.dto";
 import argon2 from "argon2";
@@ -79,6 +81,23 @@ export async function getUserPassword(input: GetUserByIdInput) {
     },
     select: {
       password: true,
+    },
+  });
+}
+
+export async function generateUserPasswordToken(
+  input: GeneratePasswordTokenInput
+) {
+  const secret = "8jA5274135EyBFgeUxUX1ohjABebNS7w";
+  const payload = { email: input.params.userEmail };
+  const options = { expiresIn: "1h" };
+  const token = jwt.sign(payload, secret, options);
+  return await prisma.user.update({
+    where: {
+      email: input.params.userEmail,
+    },
+    data: {
+      token: token,
     },
   });
 }

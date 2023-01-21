@@ -3,6 +3,7 @@ import {
   CreateUserInput,
   EditUserInput,
   EditUserPasswordInput,
+  GeneratePasswordTokenInput,
   GetUserByIdInput,
   GetUserInput,
 } from "./user.dto";
@@ -13,6 +14,7 @@ import {
   editUserPassword,
   findUser,
   findUserById,
+  generateUserPasswordToken,
   getUserPassword,
 } from "./user.service";
 import { omit } from "lodash";
@@ -99,5 +101,22 @@ export async function editUserPasswordHandler(
     return res.status(404).send({ message: "User not found" });
   } catch (error: any) {
     return res.status(409).send(error);
+  }
+}
+
+export async function generateUserPasswordTokenController(
+  req: Request<GeneratePasswordTokenInput["params"]>,
+  res: Response
+) {
+  try {
+    const user = await findUser(req.params.userEmail);
+    if (user) {
+      console.log(req);
+      const response = await generateUserPasswordToken(req);
+      return res.status(200).send(response);
+    }
+    return res.status(404).send({ message: "Email not found" });
+  } catch (error) {
+    return res.status(409).send(error.message);
   }
 }

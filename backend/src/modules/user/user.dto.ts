@@ -66,8 +66,17 @@ export const EditPasswordSchema = z.object({
   }),
 });
 
+export const GeneratePasswordTokenSchema = z.object({
+  params: z.object({
+    userEmail: Email,
+  }),
+});
+
 export type CreateUserInput = z.infer<typeof CreateUserSchema>;
 export type GetUserInput = z.infer<typeof GetUserSchema>;
 export type GetUserByIdInput = z.infer<typeof GetUserByIdSchema>;
 export type EditUserInput = z.infer<typeof EditUserSchema>;
 export type EditUserPasswordInput = z.infer<typeof EditPasswordSchema>;
+export type GeneratePasswordTokenInput = z.infer<
+  typeof GeneratePasswordTokenSchema
+>;
