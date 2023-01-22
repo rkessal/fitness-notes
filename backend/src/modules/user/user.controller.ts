@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import {
+  ResetPasswordInput,
   CreateUserInput,
   EditUserInput,
   EditUserPasswordInput,
@@ -9,6 +10,7 @@ import {
 } from "./user.dto";
 import {
   checkPassword,
+  checkToken,
   createUser,
   editUser,
   editUserPassword,
@@ -16,6 +18,7 @@ import {
   findUserById,
   generateUserPasswordToken,
   getUserPassword,
+  resetUserPassword,
 } from "./user.service";
 import { omit } from "lodash";
 import logger from "../../utils/logger";
@@ -71,6 +74,33 @@ export async function editUserHandler(
   }
 }
 
+export async function resetUserPasswordHandler(
+  req: Request<{}, {}, ResetPasswordInput["body"]>,
+  res: Response
+) {
+  try {
+    const decodedToken = checkToken(req.body.token);
+    if (decodedToken.expired) {
+      return res.status(400).send({ message: "Token expired" });
+    }
+    if (decodedToken.decodedToken) {
+      const user = await findUser(decodedToken.decodedToken.email);
+      if (user) {
+        if (user.token) {
+          const response = await resetUserPassword(
+            req.body.candidatePassword,
+            decodedToken.decodedToken.email
+          );
+          console.log(response);
+          return res.send(omit(response, "password"));
+        }
+        return res.status(400).send({ message: "Token expired" });
+      }
+    }
+    return res.status(404).send({ message: "No user with this email address" });
+  } catch (error) {}
+}
+
 export async function editUserPasswordHandler(
   req: Request<
     EditUserPasswordInput["params"],
@@ -87,7 +117,7 @@ export async function editUserPasswordHandler(
         if (userPassword) {
           const check = await checkPassword(
             userPassword.password,
-            req.body.password
+            req.body.candidatePassword
           );
           if (check) {
             const response = await editUserPassword(req);
@@ -104,7 +134,7 @@ export async function editUserPasswordHandler(
   }
 }
 
-export async function generateUserPasswordTokenController(
+export async function generateUserPasswordTokenHandler(
   req: Request<GeneratePasswordTokenInput["params"]>,
   res: Response
 ) {
@@ -113,7 +143,7 @@ export async function generateUserPasswordTokenController(
     if (user) {
       console.log(req);
       const response = await generateUserPasswordToken(req);
-      return res.status(200).send(response);
+      return res.status(200).send(omit(response, "password"));
     }
     return res.status(404).send({ message: "Email not found" });
   } catch (error) {

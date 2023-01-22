@@ -19,6 +19,7 @@ interface ENV {
   RAPIDAPIHOST: string | undefined;
   MAILUSER: string | undefined;
   MAILPASS: string | undefined;
+  JWTKEY: string | undefined;
 }
 
 interface Config {
@@ -32,6 +33,7 @@ interface Config {
   RAPIDAPIHOST: string;
   MAILUSER: string;
   MAILPASS: string;
+  JWTKEY: string;
 }
 
 // Loading process.env as ENV interface
@@ -48,6 +50,7 @@ const getConfig = (): ENV => {
     RAPIDAPIHOST: process.env.RAPIDAPIHOST,
     MAILUSER: process.env.MAILUSER,
     MAILPASS: process.env.MAILPASS,
+    JWTKEY: process.env.JWTKEY,
   };
 };
 

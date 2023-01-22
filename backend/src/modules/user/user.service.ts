@@ -1,6 +1,7 @@
 import * as jwt from "jsonwebtoken";
 import prisma from "../../utils/prisma";
 import {
+  ResetPasswordInput,
   CreateUserInput,
   EditUserInput,
   EditUserPasswordInput,
@@ -10,6 +11,7 @@ import {
 import argon2 from "argon2";
 import transporter from "../../utils/mailer";
 import config from "../../../config/config";
+import sanitizedConfig from "../../../config/config";
 
 export async function createUser(input: CreateUserInput["body"]) {
   const password = await argon2.hash(input.password);
@@ -56,6 +58,21 @@ export async function editUser(input: EditUserInput) {
     },
   });
 }
+export async function resetUserPassword(
+  candidatePassword: string,
+  email: string
+) {
+  const password = await argon2.hash(candidatePassword);
+  return await prisma.user.update({
+    where: {
+      email: email,
+    },
+    data: {
+      password: password,
+      token: null,
+    },
+  });
+}
 
 export async function editUserPassword(input: EditUserPasswordInput) {
   const password = await argon2.hash(input.body.candidatePassword);
@@ -76,6 +93,25 @@ export async function checkPassword(
   return await argon2.verify(password, candidatePassword);
 }
 
+export function checkToken(token: string) {
+  try {
+    const decodedToken = <jwt.EmailJwtPayload>(
+      jwt.verify(token, sanitizedConfig.JWTKEY)
+    );
+    return {
+      valid: true,
+      expired: false,
+      decodedToken,
+    };
+  } catch (error) {
+    return {
+      valid: false,
+      expired: error.message === "jwt expired",
+      decodedToken: null,
+    };
+  }
+}
+
 export async function getUserPassword(input: GetUserByIdInput) {
   return await prisma.user.findUnique({
     where: {
@@ -90,7 +126,7 @@ export async function getUserPassword(input: GetUserByIdInput) {
 export async function generateUserPasswordToken(
   input: GeneratePasswordTokenInput
 ) {
-  const secret = "8jA5274135EyBFgeUxUX1ohjABebNS7w";
+  const secret = sanitizedConfig.JWTKEY;
   const payload = { email: input.params.userEmail };
   const options = { expiresIn: "1h" };
   const token = jwt.sign(payload, secret, options);
