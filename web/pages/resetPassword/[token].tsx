@@ -39,7 +39,7 @@ export default function ResetPassword({}: Props) {
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.currentTarget.value)}
       ></input>
-      <p>Make sure it's atleast 8 characters</p>
+      <p>Make sure it&apos;s atleast 8 characters</p>
       <button onClick={handleSubmit}>Change password</button>
     </div>
   );
